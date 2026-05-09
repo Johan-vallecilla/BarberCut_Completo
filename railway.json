@@ -1,1 +1,1 @@
-{"$schema":"https://schema.railway.com/railway.json","build":{"builder":"NIXPACKS","buildCommand":"pip install -r backend/requirements.txt"},"deploy":{"startCommand":"cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT","healthcheckPath":"/docs"}}
+{"$schema":"https://schema.railway.com/railway.json","build":{"builder":"NIXPACKS","buildCommand":"pip3 install -r backend/requirements.txt"},"deploy":{"startCommand":"cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT","healthcheckPath":"/docs"}}
