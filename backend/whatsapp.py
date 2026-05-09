@@ -49,6 +49,10 @@ def _formatear_numero(telefono: str) -> str:
     return f"{WHATSAPP_COUNTRY_CODE}{telefono}"
 
 
+# Nombre exacto de la plantilla aprobada en Meta Business
+_TEMPLATE_CANCELACION = "cita_cancelada_barbercut"
+
+
 def enviar_whatsapp_cancelacion(
     telefono: str,
     nombre_cliente: str,
@@ -58,34 +62,28 @@ def enviar_whatsapp_cancelacion(
     servicio: str,
 ) -> bool:
     """
-    Envía un mensaje de WhatsApp al cliente avisando que el barbero canceló su cita.
+    Envía un WhatsApp al cliente usando la plantilla aprobada por Meta:
+    'cita_cancelada_barbercut'
+
+    Parámetros de la plantilla:
+        {{1}} → nombre del cliente
+        {{2}} → fecha
+        {{3}} → hora
+        {{4}} → servicio
+        {{5}} → barbero
 
     Retorna True si el envío fue exitoso, False en caso contrario.
-    Si la API no está configurada, imprime el mensaje en consola (modo dev).
     """
-    mensaje = (
-        f"Hola {nombre_cliente} 👋, te informamos que tu cita en *BarberCut* ha sido *CANCELADA* por el barbero.\n\n"
-        f"📅 *Fecha:* {fecha}\n"
-        f"🕐 *Hora:* {hora}\n"
-        f"✂️ *Servicio:* {servicio} con {barbero}\n\n"
-        "Puedes reservar una nueva cita en nuestra página. ¡Disculpa el inconveniente! 🙏"
-    )
-
     if not _whatsapp_disponible:
-        # Modo desarrollo: solo loguear
-        logger.warning(
-            "[WhatsApp — modo dev, API no configurada]\n"
-            f"  Para: {telefono}\n"
-            f"  Mensaje: {mensaje}"
-        )
         print(
             f"\n{'='*55}\n"
-            f"  💬 WhatsApp (simulado — configura la API para envío real)\n"
+            f"  💬 WhatsApp cancelación (simulado)\n"
             f"  Para: {telefono}\n"
-            f"  {mensaje}\n"
+            f"  Hola {nombre_cliente}, tu cita en BarberCut ha sido CANCELADA.\n"
+            f"  Fecha: {fecha} | Hora: {hora} | {servicio} con {barbero}\n"
             f"{'='*55}\n"
         )
-        return True  # En dev lo tratamos como exitoso
+        return True
 
     try:
         numero_destino = _formatear_numero(telefono)
@@ -96,15 +94,30 @@ def enviar_whatsapp_cancelacion(
             "Content-Type": "application/json",
         }
 
+        # Payload usando plantilla aprobada por Meta
         payload = {
             "messaging_product": "whatsapp",
             "recipient_type": "individual",
             "to": numero_destino,
-            "type": "text",
-            "text": {
-                "preview_url": False,
-                "body": mensaje,
-            },
+            "type": "template",
+            "template": {
+                "name": _TEMPLATE_CANCELACION,
+                "language": {
+                    "code": "es_CO"
+                },
+                "components": [
+                    {
+                        "type": "body",
+                        "parameters": [
+                            {"type": "text", "text": nombre_cliente},  # {{1}}
+                            {"type": "text", "text": fecha},           # {{2}}
+                            {"type": "text", "text": hora},            # {{3}}
+                            {"type": "text", "text": servicio},        # {{4}}
+                            {"type": "text", "text": barbero},         # {{5}}
+                        ]
+                    }
+                ]
+            }
         }
 
         response = requests.post(url, headers=headers, json=payload, timeout=10)
@@ -113,8 +126,8 @@ def enviar_whatsapp_cancelacion(
         data = response.json()
         message_id = data.get("messages", [{}])[0].get("id", "N/A")
 
-        logger.info(f"[WhatsApp] Enviado a {numero_destino} — ID: {message_id}")
-        print(f"[BarberCut] 💬 WhatsApp enviado a +{numero_destino} (ID: {message_id})")
+        logger.info(f"[WhatsApp] Plantilla enviada a {numero_destino} — ID: {message_id}")
+        print(f"[BarberCut] 💬 WhatsApp plantilla enviado a +{numero_destino} (ID: {message_id})")
         return True
 
     except requests.exceptions.HTTPError as e:
@@ -123,12 +136,12 @@ def enviar_whatsapp_cancelacion(
             error_detail = e.response.json().get("error", {}).get("message", "")
         except Exception:
             pass
-        logger.error(f"[WhatsApp] Error HTTP al enviar a {telefono}: {e} — {error_detail}")
+        logger.error(f"[WhatsApp] Error HTTP al enviar plantilla a {telefono}: {e} — {error_detail}")
         print(f"[BarberCut] ⚠️  Error enviando WhatsApp a {telefono}: {e} — {error_detail}")
         return False
 
     except Exception as e:
-        logger.error(f"[WhatsApp] Error al enviar a {telefono}: {e}")
+        logger.error(f"[WhatsApp] Error al enviar plantilla a {telefono}: {e}")
         print(f"[BarberCut] ⚠️  Error enviando WhatsApp a {telefono}: {e}")
         return False
 
