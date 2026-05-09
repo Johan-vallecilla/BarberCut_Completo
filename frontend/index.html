@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="BarberCut — Plataforma de reservas online para barberías colombianas. Tu turno, tu estilo, sin esperas." />
+  <meta name="keywords" content="barbería, reservas online, turnos, Colombia, Valle del Cauca, peluquería" />
+  <meta name="author" content="BarberCut" />
+  <title>BarberCut — Tu turno, tu estilo, sin esperas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+ 
+  <!-- ═══════════════════════════════════════
+       NAVBAR
+  ═══════════════════════════════════════ -->
+  <nav class="navbar" id="navbar">
+    <a href="#inicio" class="nav-logo">Barber<span>Cut</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#nosotros">Nosotros</a></li>
+      <li><a href="#precios">Precios</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+      <li><a href="/reservar" class="btn-nav">Reserva tu turno</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Abrir menú">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+ 
+  <!-- ═══════════════════════════════════════
+       SECCIÓN 1 — HERO / INICIO
+  ═══════════════════════════════════════ -->
+  <section id="inicio" class="hero">
+    <div class="hero-bg">
+      <div class="hero-circle c1"></div>
+      <div class="hero-circle c2"></div>
+      <div class="hero-grain"></div>
+    </div>
+    <div class="hero-content">
+      <span class="hero-badge">✦ Plataforma SaaS · Valle del Cauca</span>
+      <h1 class="hero-title">Tu turno,<br><em>tu estilo,</em><br>sin esperas.</h1>
+      <p class="hero-sub">Reserva tu cita en la barbería favorita desde tu celular. Sin llamadas, sin filas, sin perder tiempo.</p>
+      <div class="hero-btns">
+        <a href="/reservar" class="btn-primary">Reserva ahora</a>
+        <a href="#servicios" class="btn-ghost">Ver cómo funciona</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">500+</span>
+          <span class="stat-label">Barberías registradas</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">12K+</span>
+          <span class="stat-label">Reservas completadas</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">4.9★</span>
+          <span class="stat-label">Calificación promedio</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="phone-mockup">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="app-header">
+            <span class="app-logo">BarberCut</span>
+            <span class="app-bell">🔔</span>
+          </div>
+          <p class="app-greeting">Buenos días, Juan ✌️</p>
+          <p class="app-sub-text">Tu próxima cita</p>
+          <div class="app-card">
+            <div class="app-card-top">
+              <div class="app-avatar">MA</div>
+              <div>
+                <p class="app-barber">Miguel Ángel</p>
+                <p class="app-service">Corte + Fade</p>
+              </div>
+              <span class="app-status">Confirmada</span>
+            </div>
+            <div class="app-card-bottom">
+              <span>📅 Hoy, 3:30 PM</span>
+              <span>📍 Cali, Valle</span>
+            </div>
+          </div>
+          <p class="app-sub-text" style="margin-top:14px;">Barberos disponibles</p>
+          <div class="app-barbers">
+            <div class="barber-chip active-chip">MA</div>
+            <div class="barber-chip">CR</div>
+            <div class="barber-chip">LP</div>
+            <div class="barber-chip">+2</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- ═══════════════════════════════════════
+       SECCIÓN 2 — SERVICIOS / PRODUCTO
+  ═══════════════════════════════════════ -->
+  <section id="servicios" class="servicios">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">¿Cómo funciona?</span>
+        <h2>Todo lo que necesita<br>tu barbería, <em>en un solo lugar</em></h2>
+        <p class="section-sub">BarberCut digitaliza tu barbería en minutos. Sin conocimientos técnicos, sin inversión inicial.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card fc-large">
+          <div class="fc-icon">📱</div>
+          <h3>Reserva desde cualquier dispositivo</h3>
+          <p>Tus clientes eligen barbero, servicio y horario en menos de 1 minuto desde el celular o computador.</p>
+          <div class="fc-steps">
+            <span class="step">1. Elige barbero</span>
+            <span class="step-arrow">→</span>
+            <span class="step">2. Selecciona horario</span>
+            <span class="step-arrow">→</span>
+            <span class="step">3. Confirma</span>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">⚡</div>
+          <h3>Disponibilidad en tiempo real</h3>
+          <p>El sistema actualiza los horarios automáticamente. Nunca dos clientes al mismo tiempo.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">📊</div>
+          <h3>Panel de administración</h3>
+          <p>Ve todas las citas del día, gestiona tus barberos y consulta el historial de reservas.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">🔔</div>
+          <h3>Sin cancelaciones silenciosas</h3>
+          <p>Cuando un cliente cancela, el turno queda libre automáticamente para otro cliente.</p>
+        </div>
+        <div class="feature-card fc-accent">
+          <div class="fc-icon">📈</div>
+          <h3>Métricas de tu negocio</h3>
+          <p>Descubre tus horas pico, el barbero más solicitado y los servicios más populares.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+
+  <!-- ═══════════════════════════════════════
+       SECCIÓN 3 — NOSOTROS / EQUIPO
+  ═══════════════════════════════════════ -->
+  <section id="nosotros" class="nosotros">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Quiénes somos</span>
+        <h2>Construido por desarrolladores,<br><em>para barberías colombianas</em></h2>
+        <p class="section-sub">Somos un equipo de la Universidad del Valle apasionado por resolver problemas reales con tecnología. BarberCut nació de ver cómo las barberías perdían clientes por no tener un sistema de reservas digital.</p>
+      </div>
+
+      <div class="nosotros-layout">
+        <div class="mision-grid">
+          <div class="mision-card">
+            <div class="mision-icon">🎯</div>
+            <h3>Misión</h3>
+            <p>Digitalizar las barberías colombianas con una plataforma SaaS accesible, rápida y sin fricción, para que puedan enfocarse en lo que mejor hacen: dar el mejor corte.</p>
+          </div>
+          <div class="mision-card">
+            <div class="mision-icon">🚀</div>
+            <h3>Visión</h3>
+            <p>Ser la plataforma de gestión de citas número uno en Colombia para el sector de estilismo y barbería antes del 2027, con presencia en toda Latinoamérica.</p>
+          </div>
+          <div class="mision-card">
+            <div class="mision-icon">⚙️</div>
+            <h3>Stack tecnológico</h3>
+            <p>Construido con <strong>FastAPI + Python</strong> en el backend, <strong>MySQL + SQLAlchemy</strong> como base de datos, y <strong>HTML/CSS/JS</strong> en el frontend. Desplegado en la nube.</p>
+          </div>
+          <div class="mision-card mision-highlight">
+            <div class="mision-icon">🏆</div>
+            <h3>¿Por qué BarberCut?</h3>
+            <p>Sin comisiones por reserva, sin instalaciones, sin contratos. Solo una plataforma que funciona desde el día uno y crece contigo.</p>
+          </div>
+        </div>
+
+        <div class="equipo-section">
+          <h3 class="equipo-titulo">El equipo</h3>
+          <div class="equipo-grid">
+            <div class="team-card">
+              <div class="team-avatar" aria-label="Perfil desarrollador">
+                <span class="team-initials">DS</span>
+              </div>
+              <h4 class="team-name">Dev Student</h4>
+              <span class="team-role">Full Stack Developer</span>
+              <p class="team-bio">Estudiante de Ingeniería de Sistemas en la Universidad del Valle. Especializado en APIs REST con Python y FastAPI.</p>
+              <div class="team-tags">
+                <span class="tag">Python</span>
+                <span class="tag">FastAPI</span>
+                <span class="tag">MySQL</span>
+              </div>
+            </div>
+            <div class="team-card">
+              <div class="team-avatar team-avatar-2" aria-label="Perfil diseñador">
+                <span class="team-initials">UI</span>
+              </div>
+              <h4 class="team-name">UI Engineer</h4>
+              <span class="team-role">Frontend &amp; UX</span>
+              <p class="team-bio">Estudiante de Ingeniería de Sistemas en la Universidad del Valle. Apasionado por la experiencia de usuario y el diseño responsivo.</p>
+              <div class="team-tags">
+                <span class="tag">HTML/CSS</span>
+                <span class="tag">JavaScript</span>
+                <span class="tag">UX Design</span>
+              </div>
+            </div>
+          </div>
+          <div class="uni-badge">
+            <span class="uni-icon">🎓</span>
+            <div>
+              <p class="uni-name">Universidad del Valle</p>
+              <p class="uni-sub">Ingeniería de Sistemas · Cali, Colombia · 2025</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       SECCIÓN 4 — PRECIOS / PLANES
+  ═══════════════════════════════════════ -->
+  <section id="precios" class="precios">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Planes y precios</span>
+        <h2>Empieza gratis,<br><em>crece cuando quieras</em></h2>
+        <p class="section-sub">Sin comisiones por reserva. Sin contratos. Cancela cuando quieras.</p>
+      </div>
+      <div class="planes-grid">
+        <div class="plan-card">
+          <div class="plan-header">
+            <span class="plan-name">Gratis</span>
+            <div class="plan-price">
+              <span class="plan-num">$0</span>
+              <span class="plan-period">/ mes</span>
+            </div>
+            <p class="plan-desc">Perfecto para empezar a digitalizar tu barbería sin ningún riesgo.</p>
+          </div>
+          <ul class="plan-features">
+            <li><span class="feat-ok">✓</span> 1 barbero activo</li>
+            <li><span class="feat-ok">✓</span> Hasta 30 reservas / mes</li>
+            <li><span class="feat-ok">✓</span> Página de reservas pública</li>
+            <li><span class="feat-ok">✓</span> Historial de citas</li>
+            <li><span class="feat-no">✗</span> Panel de métricas</li>
+            <li><span class="feat-no">✗</span> Múltiples barberos</li>
+            <li><span class="feat-no">✗</span> Soporte prioritario</li>
+          </ul>
+          <a href="#reservas" class="btn-ghost btn-full">Empezar gratis</a>
+        </div>
+ 
+        <div class="plan-card plan-popular">
+          <span class="plan-badge">Más popular</span>
+          <div class="plan-header">
+            <span class="plan-name">Pro</span>
+            <div class="plan-price">
+              <span class="plan-num">$49.900</span>
+              <span class="plan-period">/ mes</span>
+            </div>
+            <p class="plan-desc">Para barberías que quieren crecer con datos y sin límites.</p>
+          </div>
+          <ul class="plan-features">
+            <li><span class="feat-ok">✓</span> Hasta 5 barberos activos</li>
+            <li><span class="feat-ok">✓</span> Reservas ilimitadas</li>
+            <li><span class="feat-ok">✓</span> Página de reservas pública</li>
+            <li><span class="feat-ok">✓</span> Historial de citas</li>
+            <li><span class="feat-ok">✓</span> Panel de métricas completo</li>
+            <li><span class="feat-ok">✓</span> Múltiples barberos</li>
+            <li><span class="feat-ok">✓</span> Soporte prioritario</li>
+          </ul>
+          <a href="#contacto" class="btn-primary btn-full">Comenzar Pro</a>
+        </div>
+ 
+        <div class="plan-card">
+          <div class="plan-header">
+            <span class="plan-name">Empresa</span>
+            <div class="plan-price">
+              <span class="plan-num">A medida</span>
+            </div>
+            <p class="plan-desc">Para cadenas de barberías con múltiples sedes en Colombia.</p>
+          </div>
+          <ul class="plan-features">
+            <li><span class="feat-ok">✓</span> Barberos ilimitados</li>
+            <li><span class="feat-ok">✓</span> Múltiples sedes</li>
+            <li><span class="feat-ok">✓</span> API personalizada</li>
+            <li><span class="feat-ok">✓</span> Dashboard ejecutivo</li>
+            <li><span class="feat-ok">✓</span> Integración con DIAN</li>
+            <li><span class="feat-ok">✓</span> Soporte 24/7</li>
+            <li><span class="feat-ok">✓</span> Onboarding dedicado</li>
+          </ul>
+          <a href="#contacto" class="btn-ghost btn-full">Hablar con ventas</a>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- ═══════════════════════════════════════
+       SECCIÓN 4 — CONTACTO
+  ═══════════════════════════════════════ -->
+  <section id="contacto" class="contacto">
+    <div class="container contacto-layout">
+      <div class="contacto-info">
+        <span class="section-tag">Contáctanos</span>
+        <h2>¿Tienes preguntas?<br><em>Estamos aquí.</em></h2>
+        <p>Escríbenos y te respondemos en menos de 24 horas. También puedes encontrarnos en redes sociales.</p>
+        <div class="contact-items">
+          <div class="contact-item">
+            <span class="c-icon">📧</span>
+            <span>hola@barbercut.co</span>
+          </div>
+          <div class="contact-item">
+            <span class="c-icon">📱</span>
+            <span>+57 316 000 0000</span>
+          </div>
+          <div class="contact-item">
+            <span class="c-icon">📍</span>
+            <span>Cali, Valle del Cauca, Colombia</span>
+          </div>
+        </div>
+        <div class="social-links">
+          <a href="https://instagram.com/barbercut.co" target="_blank" class="social-btn" aria-label="Instagram">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            Instagram
+          </a>
+          <a href="https://linkedin.com/company/barbercut" target="_blank" class="social-btn" aria-label="LinkedIn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M7 10v7M7 7v.01M12 17v-4a2 2 0 014 0v4M12 13v4"/></svg>
+            LinkedIn
+          </a>
+        </div>
+      </div>
+ 
+      <form class="contacto-form" id="contactoForm" novalidate>
+        <div class="form-group">
+          <label for="c-nombre">Nombre</label>
+          <input type="text" id="c-nombre" name="c-nombre" placeholder="Tu nombre completo" />
+          <span class="form-error" id="err-c-nombre"></span>
+        </div>
+        <div class="form-group">
+          <label for="c-email">Correo electrónico</label>
+          <input type="email" id="c-email" name="c-email" placeholder="tucorreo@ejemplo.com" />
+          <span class="form-error" id="err-c-email"></span>
+        </div>
+        <div class="form-group">
+          <label for="c-asunto">Asunto</label>
+          <select id="c-asunto" name="c-asunto">
+            <option value="">Selecciona un asunto</option>
+            <option value="demo">Quiero una demo</option>
+            <option value="soporte">Soporte técnico</option>
+            <option value="precios">Información de precios</option>
+            <option value="otro">Otro</option>
+          </select>
+          <span class="form-error" id="err-c-asunto"></span>
+        </div>
+        <div class="form-group">
+          <label for="c-mensaje">Mensaje</label>
+          <textarea id="c-mensaje" name="c-mensaje" rows="4" placeholder="Cuéntanos en qué podemos ayudarte..."></textarea>
+          <span class="form-error" id="err-c-mensaje"></span>
+        </div>
+        <button type="submit" class="btn-primary btn-full">Enviar mensaje</button>
+        <div class="form-success contact-success" id="contactSuccess">
+          <span>✓</span> ¡Mensaje enviado! Te respondemos pronto.
+        </div>
+      </form>
+    </div>
+  </section>
+ 
+  <!-- ═══════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <a href="#inicio" class="nav-logo">Barber<span>Cut</span></a>
+      <p class="footer-copy">© 2025 BarberCut · Cali, Valle del Cauca, Colombia</p>
+      <div class="footer-links">
+        <a href="#servicios">Servicios</a>
+        <a href="#nosotros">Nosotros</a>
+        <a href="#precios">Precios</a>
+        <a href="#contacto">Contacto</a>
+        <a href="/reservar">Reservas</a>
+        <a href="/admin/login">Admin</a>
+      </div>
+    </div>
+  </footer>
+ 
+  <script src="js/main.js"></script>
+</body>
+</html>

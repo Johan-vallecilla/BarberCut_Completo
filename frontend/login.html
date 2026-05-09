@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="BarberCut — Acceso al panel de administración" />
+  <title>BarberCut — Admin Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:      #f8f9fb;
+      --bg2:     #ffffff;
+      --bg3:     #f0f2f5;
+      --accent:  #00a87e;
+      --accent2: #008f6a;
+      --text:    #111827;
+      --gray:    #6b7280;
+      --gray2:   #9ca3af;
+      --border:  #e5e7eb;
+      --red:     #ef4444;
+      --purple:  #7c3aed;
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Fondo decorativo suave */
+    .bg-circle {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.08;
+      pointer-events: none;
+    }
+    .bg-c1 { width: 500px; height: 500px; background: var(--purple); top: -150px; right: -150px; }
+    .bg-c2 { width: 350px; height: 350px; background: var(--accent); bottom: -100px; left: -100px; }
+
+    /* Tarjeta de login */
+    .login-card {
+      position: relative;
+      z-index: 1;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px 44px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+    }
+
+    /* Logo */
+    .login-logo { text-align: center; margin-bottom: 8px; }
+    .login-logo-icon {
+      width: 56px; height: 56px;
+      background: rgba(0,168,126,0.08);
+      border: 1px solid rgba(0,168,126,0.2);
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+    .login-logo a {
+      display: block;
+      font-family: var(--font-head);
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .login-logo a span { color: var(--accent); }
+    .login-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--purple);
+      background: rgba(124,58,237,0.06);
+      border: 1px solid rgba(124,58,237,0.2);
+      padding: 3px 12px;
+      border-radius: 20px;
+      margin-top: 8px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .login-title {
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 700;
+      text-align: center;
+      margin: 28px 0 6px;
+      color: var(--text);
+    }
+    .login-sub {
+      font-size: 13px;
+      color: var(--gray);
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    /* Form */
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+    label { font-size: 13px; font-weight: 500; color: var(--gray); }
+    .input-wrap { position: relative; }
+    .input-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%); font-size: 15px; pointer-events: none;
+    }
+    input {
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px 12px 42px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 14px;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    input::placeholder { color: var(--gray2); }
+    input:focus { border-color: var(--accent); }
+    input.error { border-color: var(--red); }
+
+    .show-pass {
+      position: absolute; right: 14px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      color: var(--gray2); font-size: 15px; padding: 0;
+      transition: color 0.2s;
+    }
+    .show-pass:hover { color: var(--text); }
+
+    .form-error { font-size: 12px; color: var(--red); min-height: 16px; }
+
+    /* Alert error */
+    .alert-error {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: rgba(239,68,68,0.06);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--red);
+      margin-bottom: 20px;
+    }
+    .alert-error.show { display: flex; }
+
+    /* Botón submit */
+    .btn-login {
+      width: 100%;
+      background: var(--accent);
+      color: #ffffff;
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 14px;
+      padding: 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      margin-top: 6px;
+      letter-spacing: 0.02em;
+    }
+    .btn-login:hover { background: var(--accent2); transform: translateY(-2px); }
+    .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .login-footer {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--gray2);
+    }
+    .login-footer a { color: var(--accent); text-decoration: none; font-weight: 500; }
+    .login-footer a:hover { text-decoration: underline; }
+
+    /* Hint demo */
+    .demo-hint {
+      background: rgba(0,168,126,0.04);
+      border: 1px dashed rgba(0,168,126,0.25);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 24px;
+      font-size: 12px;
+      color: var(--gray);
+      line-height: 1.6;
+    }
+    .demo-hint strong { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <div class="bg-circle bg-c1"></div>
+  <div class="bg-circle bg-c2"></div>
+
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">✂️</div>
+      <a href="/"><span>Barber</span>Cut</a>
+      <div><span class="login-badge">Panel Admin</span></div>
+    </div>
+
+    <h2 class="login-title">Bienvenido de nuevo</h2>
+    <p class="login-sub">Ingresa tus credenciales para acceder al panel</p>
+
+    <div class="demo-hint">
+      <strong>Credenciales de demo:</strong><br>
+      Usuario: <strong>admin</strong> &nbsp;|&nbsp; Contraseña: <strong>barbercut123</strong>
+    </div>
+
+    <div class="alert-error" id="alertError">
+      <span>⚠</span>
+      <span id="alertMsg">Usuario o contraseña incorrectos.</span>
+    </div>
+
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <label for="usuario">Usuario</label>
+        <div class="input-wrap">
+          <span class="input-icon">👤</span>
+          <input type="text" id="usuario" name="usuario" placeholder="Tu usuario" autocomplete="username" />
+        </div>
+        <span class="form-error" id="err-usuario"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="password" name="password" placeholder="Tu contraseña" autocomplete="current-password" />
+          <button type="button" class="show-pass" id="togglePass" aria-label="Mostrar contraseña">👁</button>
+        </div>
+        <span class="form-error" id="err-password"></span>
+      </div>
+
+      <button type="submit" class="btn-login" id="btnLogin">Ingresar al panel</button>
+    </form>
+
+    <div class="login-footer">
+      <a href="/">← Volver al sitio principal</a>
+    </div>
+  </div>
+
+  <script>
+    const togglePass = document.getElementById('togglePass');
+    const passInput  = document.getElementById('password');
+    togglePass.addEventListener('click', () => {
+      const visible = passInput.type === 'text';
+      passInput.type = visible ? 'password' : 'text';
+      togglePass.textContent = visible ? '👁' : '🙈';
+    });
+
+    const loginForm  = document.getElementById('loginForm');
+    const alertError = document.getElementById('alertError');
+    const alertMsg   = document.getElementById('alertMsg');
+    const btnLogin   = document.getElementById('btnLogin');
+
+    function setError(id, msg) { document.getElementById(id).textContent = msg; }
+    function clearErrors() {
+      ['err-usuario','err-password'].forEach(id => document.getElementById(id).textContent = '');
+      alertError.classList.remove('show');
+    }
+
+    loginForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      clearErrors();
+      const usuario  = document.getElementById('usuario');
+      const password = document.getElementById('password');
+      let valido = true;
+      if (!usuario.value.trim()) { setError('err-usuario', 'El usuario es obligatorio.'); usuario.classList.add('error'); valido = false; }
+      if (!password.value)       { setError('err-password', 'La contraseña es obligatoria.'); password.classList.add('error'); valido = false; }
+      if (!valido) return;
+
+      btnLogin.disabled = true;
+      btnLogin.textContent = 'Verificando...';
+
+      try {
+        const res = await fetch('/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ usuario: usuario.value.trim(), password: password.value })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          btnLogin.textContent = '✓ Acceso concedido';
+          window.location.href = '/admin/dashboard';
+        } else {
+          alertMsg.textContent = data.detail || 'Usuario o contraseña incorrectos.';
+          alertError.classList.add('show');
+          btnLogin.disabled = false;
+          btnLogin.textContent = 'Ingresar al panel';
+        }
+      } catch {
+        alertMsg.textContent = 'No se pudo conectar al servidor.';
+        alertError.classList.add('show');
+        btnLogin.disabled = false;
+        btnLogin.textContent = 'Ingresar al panel';
+      }
+    });
+
+    ['usuario','password'].forEach(id => {
+      document.getElementById(id).addEventListener('input', function() {
+        this.classList.remove('error');
+        document.getElementById('err-' + id).textContent = '';
+        alertError.classList.remove('show');
+      });
+    });
+  </script>
+</body>
+</html>

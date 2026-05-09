@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BarberCut — Panel de Administración</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:      #f8f9fb; --bg2: #ffffff; --bg3: #f0f2f5; --bg4: #e8f5f0;
+      --accent:  #00a87e; --accent2: #008f6a;
+      --text:    #111827; --gray: #6b7280; --gray2: #9ca3af; --border: #e5e7eb;
+      --red: #ef4444; --purple: #7c3aed; --yellow: #d97706;
+      --font-head: 'Syne', sans-serif; --font-body: 'DM Sans', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); min-height: 100vh; display: flex; }
+
+    /* SIDEBAR */
+    .sidebar { width: 220px; flex-shrink: 0; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 28px 0; position: fixed; top: 0; left: 0; bottom: 0; z-index: 10; }
+    .sidebar-logo { font-family: var(--font-head); font-size: 20px; font-weight: 800; padding: 0 24px 28px; border-bottom: 1px solid var(--border); letter-spacing: -0.02em; color: var(--text); }
+    .sidebar-logo span { color: var(--accent); }
+    .sidebar-badge { display: block; font-size: 10px; color: var(--purple); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 3px; }
+    .sidebar-nav { flex: 1; padding: 20px 0; list-style: none; }
+    .sidebar-nav li a { display: flex; align-items: center; gap: 10px; padding: 11px 24px; font-size: 13px; font-weight: 500; color: var(--gray); text-decoration: none; transition: color 0.2s, background 0.2s; border-left: 2px solid transparent; }
+    .sidebar-nav li a:hover { color: var(--text); background: rgba(0,0,0,0.03); }
+    .sidebar-nav li a.active { color: var(--accent); border-left-color: var(--accent); background: rgba(0,168,126,0.06); }
+    .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+    .sidebar-user { padding: 20px 24px 0; border-top: 1px solid var(--border); }
+    .user-info { display: flex; align-items: center; gap: 10px; }
+    .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: rgba(0,168,126,0.1); color: var(--accent); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .user-role { font-size: 11px; color: var(--gray2); }
+    .btn-logout { display: block; margin-top: 12px; width: 100%; padding: 9px; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--gray); font-family: var(--font-body); font-size: 12px; cursor: pointer; transition: border-color 0.2s, color 0.2s; text-align: center; }
+    .btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+    /* MAIN */
+    .main { margin-left: 220px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+    .topbar { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 18px 32px; display: flex; align-items: center; justify-content: space-between; }
+    .topbar-title { font-family: var(--font-head); font-size: 18px; font-weight: 700; color: var(--text); }
+    .topbar-date { font-size: 13px; color: var(--gray); }
+    .content { padding: 32px; flex: 1; }
+
+    /* STATS */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+    .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 22px; transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s; }
+    .stat-card:hover { border-color: rgba(0,168,126,0.3); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .stat-icon { font-size: 22px; margin-bottom: 14px; }
+    .stat-num { font-family: var(--font-head); font-size: 30px; font-weight: 800; margin-bottom: 4px; color: var(--text); }
+    .stat-label { font-size: 12px; color: var(--gray); }
+    .stat-trend { font-size: 11px; margin-top: 8px; color: var(--accent); }
+
+    /* SECTION TITLE */
+    .section-title { font-family: var(--font-head); font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; color: var(--text); }
+    .section-title span { font-size: 12px; color: var(--gray); font-family: var(--font-body); font-weight: 400; }
+
+    /* TABLA */
+    .table-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 32px; }
+    .table-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .table-search { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; color: var(--text); font-family: var(--font-body); font-size: 13px; outline: none; width: 220px; transition: border-color 0.2s; }
+    .table-search::placeholder { color: var(--gray2); }
+    .table-search:focus { border-color: var(--accent); }
+    .filter-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter-btn { padding: 7px 14px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--gray); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+    .filter-btn.active { background: var(--accent); color: #ffffff; border-color: var(--accent); font-weight: 700; }
+    .filter-btn:hover:not(.active) { border-color: var(--gray2); color: var(--text); }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: var(--gray2); letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 1px solid var(--border); background: var(--bg3); }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(0,0,0,0.02); }
+    tbody td { padding: 14px 20px; font-size: 13px; vertical-align: middle; color: var(--text); }
+    .td-avatar { width: 32px; height: 32px; border-radius: 50%; background: rgba(0,168,126,0.1); color: var(--accent); font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; margin-right: 8px; vertical-align: middle; }
+    .td-name { font-weight: 500; color: var(--text); }
+    .td-sub  { font-size: 11px; color: var(--gray2); margin-top: 2px; }
+    .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+    .badge-ok      { background: rgba(0,168,126,0.1); color: var(--accent); }
+    .badge-pending { background: rgba(217,119,6,0.1); color: var(--yellow); }
+    .badge-cancel  { background: rgba(239,68,68,0.1); color: var(--red); }
+    .btn-cancel { background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--gray); font-size: 11px; padding: 5px 10px; cursor: pointer; transition: border-color 0.2s, color 0.2s; font-family: var(--font-body); }
+    .btn-cancel:hover { border-color: var(--red); color: var(--red); }
+    .btn-cancel:disabled { opacity: 0.4; cursor: not-allowed; }
+    .empty-state { text-align: center; padding: 48px 20px; color: var(--gray); }
+    .empty-state .empty-icon { font-size: 36px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    /* GESTIÓN BARBEROS */
+    .barberos-layout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start; margin-bottom: 32px; }
+    .barberos-list { display: flex; flex-direction: column; gap: 12px; }
+    .barber-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; display: flex; align-items: center; gap: 14px; transition: border-color 0.2s, box-shadow 0.2s; }
+    .barber-card:hover { border-color: rgba(0,168,126,0.25); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .barber-av { width: 46px; height: 46px; border-radius: 50%; background: rgba(124,58,237,0.08); color: var(--purple); font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .barber-info { flex: 1; }
+    .barber-name { font-size: 14px; font-weight: 600; margin-bottom: 3px; color: var(--text); }
+    .barber-spec { font-size: 12px; color: var(--gray); margin-bottom: 6px; }
+    .barber-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+    .barber-chip { font-size: 10px; padding: 2px 8px; border-radius: 20px; background: var(--bg3); border: 1px solid var(--border); color: var(--gray2); }
+    .barber-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+    .btn-del { background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--gray); font-size: 12px; padding: 7px 14px; cursor: pointer; font-family: var(--font-body); transition: all 0.2s; white-space: nowrap; }
+    .btn-del:hover { border-color: var(--red); color: var(--red); background: rgba(239,68,68,0.04); }
+    .barberos-empty { background: var(--bg2); border: 1px dashed var(--border); border-radius: 14px; padding: 48px; text-align: center; color: var(--gray); }
+    .barberos-empty .empty-icon { font-size: 36px; margin-bottom: 12px; }
+    .barberos-empty p { font-size: 13px; line-height: 1.6; }
+
+    /* FORMULARIO AGREGAR */
+    .add-barber-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; position: sticky; top: 20px; }
+    .add-barber-header { padding: 18px 20px; border-bottom: 1px solid var(--border); background: var(--bg3); }
+    .add-barber-header h3 { font-family: var(--font-head); font-size: 15px; font-weight: 700; margin-bottom: 3px; color: var(--text); }
+    .add-barber-header p  { font-size: 12px; color: var(--gray); }
+    .add-barber-body { padding: 20px; }
+    .avatar-preview { display: flex; align-items: center; gap: 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 16px; }
+    .av-circle { width: 40px; height: 40px; border-radius: 50%; background: rgba(0,168,126,0.1); color: var(--accent); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+    .av-name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .av-spec { font-size: 11px; color: var(--gray2); }
+    .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+    label { font-size: 12px; font-weight: 500; color: var(--gray); }
+    input, select { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 13px; color: var(--text); font-family: var(--font-body); font-size: 13px; transition: border-color 0.2s; outline: none; width: 100%; }
+    input::placeholder { color: var(--gray2); }
+    input:focus, select:focus { border-color: var(--accent); }
+    input.error, select.error { border-color: var(--red); }
+    select option { background: var(--bg2); color: var(--text); }
+    .form-error { font-size: 11px; color: var(--red); min-height: 14px; }
+    .btn-add { width: 100%; padding: 12px; background: var(--accent); color: #ffffff; font-family: var(--font-head); font-weight: 700; font-size: 14px; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s, transform 0.2s; }
+    .btn-add:hover { background: var(--accent2); transform: translateY(-1px); }
+
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 200; align-items: center; justify-content: center; }
+    .modal-overlay.show { display: flex; }
+    .modal { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 32px; max-width: 380px; width: 90%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.12); }
+    .modal-icon { font-size: 36px; margin-bottom: 14px; }
+    .modal h3 { font-family: var(--font-head); font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+    .modal p  { font-size: 13px; color: var(--gray); margin-bottom: 24px; line-height: 1.6; }
+    .modal-btns { display: flex; gap: 10px; }
+    .modal-btns button { flex: 1; padding: 11px; border-radius: 8px; font-family: var(--font-body); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-confirm-del { background: var(--red); color: #ffffff; border: none; }
+    .btn-confirm-del:hover { background: #dc2626; }
+    .btn-cancel-modal { background: transparent; border: 1px solid var(--border); color: var(--gray); }
+    .btn-cancel-modal:hover { border-color: var(--text); color: var(--text); }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 28px; right: 28px; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 20px; font-size: 13px; display: flex; align-items: center; gap: 10px; transform: translateY(80px); opacity: 0; transition: transform 0.3s, opacity 0.3s; z-index: 999; max-width: 320px; color: var(--text); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-color: rgba(0,168,126,0.35); }
+    .toast.error   { border-color: rgba(239,68,68,0.35); }
+
+    @media (max-width: 1100px) { .stats-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 900px)  { .barberos-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 768px)  { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; } }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">Barber<span>Cut</span><span class="sidebar-badge">Panel Admin</span></div>
+    <ul class="sidebar-nav">
+      <li><a href="#reservas-section" class="active" onclick="setSection(this,'Reservas del día')"><span class="nav-icon">📅</span> Reservas</a></li>
+      <li><a href="#barberos-section" onclick="setSection(this,'Gestión de barberos')"><span class="nav-icon">✂️</span> Barberos</a></li>
+      <li><a href="/" target="_blank"><span class="nav-icon">🌐</span> Ver sitio</a></li>
+    </ul>
+    <div class="sidebar-user">
+      <div class="user-info">
+        <div class="user-avatar">AD</div>
+        <div><div class="user-name">Administrador</div><div class="user-role">Dueño · BarberCut</div></div>
+      </div>
+      <button class="btn-logout" id="btnLogout">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbarTitle">Reservas del día</div>
+      <div class="topbar-date" id="topbarDate"></div>
+    </div>
+
+    <div class="content">
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num" id="statHoy">0</div><div class="stat-label">Citas hoy</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-num" id="statConf">0</div><div class="stat-label">Confirmadas</div></div>
+        <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-num" id="statPend">0</div><div class="stat-label">Pendientes</div></div>
+        <div class="stat-card"><div class="stat-icon">✂️</div><div class="stat-num" id="statBarb">0</div><div class="stat-label">Barberos activos</div><div class="stat-trend" id="trendBarb"></div></div>
+      </div>
+
+      <!-- Reservas -->
+      <div id="reservas-section">
+        <div class="section-title">Reservas del día <span id="fechaHoy"></span></div>
+        <div class="table-wrap">
+          <div class="table-header">
+            <input class="table-search" id="searchInput" placeholder="🔍  Buscar por nombre o barbero..." />
+            <div class="filter-btns">
+              <button class="filter-btn active" onclick="filtrar('todos',this)">Todos</button>
+              <button class="filter-btn" onclick="filtrar('confirmada',this)">Confirmadas</button>
+              <button class="filter-btn" onclick="filtrar('pendiente',this)">Pendientes</button>
+              <button class="filter-btn" onclick="filtrar('cancelada',this)">Canceladas</button>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>Cliente</th><th>Barbero</th><th>Servicio</th><th>Hora</th><th>Estado</th><th>Acción</th></tr></thead>
+            <tbody id="tablaBody"></tbody>
+          </table>
+          <div class="empty-state" id="emptyState" style="display:none;"><div class="empty-icon">📭</div><p>No hay reservas para mostrar.</p></div>
+        </div>
+      </div>
+
+      <!-- Gestión Barberos -->
+      <div id="barberos-section">
+        <div class="section-title">
+          Gestión de barberos
+          <span>Los barberos activos aparecen automáticamente en la página de reservas</span>
+        </div>
+        <div class="barberos-layout">
+          <div>
+            <div class="barberos-list" id="barberosList"></div>
+            <div class="barberos-empty" id="barberosEmpty" style="display:none;">
+              <div class="empty-icon">✂️</div>
+              <p>No hay barberos registrados.<br>Agrega el primero desde el formulario de la derecha.</p>
+            </div>
+          </div>
+
+          <div class="add-barber-card">
+            <div class="add-barber-header">
+              <h3>Agregar barbero</h3>
+              <p>Aparece en reservas al instante</p>
+            </div>
+            <div class="add-barber-body">
+              <div class="avatar-preview">
+                <div class="av-circle" id="avCircle">?</div>
+                <div>
+                  <div class="av-name" id="avName">Nombre del barbero</div>
+                  <div class="av-spec" id="avSpec">Especialidad</div>
+                </div>
+              </div>
+              <form id="addForm" novalidate>
+                <div class="form-group">
+                  <label for="b-nombre">Nombre completo</label>
+                  <input type="text" id="b-nombre" placeholder="Ej: Andrés Torres" />
+                  <span class="form-error" id="err-nombre"></span>
+                </div>
+                <div class="form-group">
+                  <label for="b-esp">Especialidad</label>
+                  <select id="b-esp">
+                    <option value="">Selecciona</option>
+                    <option>Fade & Degradados</option>
+                    <option>Cortes clásicos</option>
+                    <option>Barba & Diseños</option>
+                    <option>Cortes modernos</option>
+                    <option>Colorimetría</option>
+                    <option>Navaja & Afeitado</option>
+                  </select>
+                  <span class="form-error" id="err-esp"></span>
+                </div>
+                <div class="form-group">
+                  <label for="b-tel">Teléfono (opcional)</label>
+                  <input type="tel" id="b-tel" placeholder="3001234567" />
+                  <span class="form-error" id="err-tel"></span>
+                </div>
+                <button type="submit" class="btn-add">+ Agregar barbero</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Modal eliminar -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-icon">⚠️</div>
+      <h3>¿Eliminar barbero?</h3>
+      <p id="modalMsg"></p>
+      <div class="modal-btns">
+        <button class="btn-cancel-modal" onclick="cerrarModal()">Cancelar</button>
+        <button class="btn-confirm-del" id="btnConfirmDel">Sí, eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const fechaStr = new Date().toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    document.getElementById('topbarDate').textContent = fechaStr;
+    document.getElementById('fechaHoy').textContent   = fechaStr;
+
+    let reservas = [], barberos = [];
+    let filtroActual = 'todos', busqueda = '', barberoAEliminar = null;
+
+    async function cargarDatos() {
+      document.getElementById('tablaBody').innerHTML =
+        '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--gray);font-size:13px;">Cargando...</td></tr>';
+      try {
+        const s = await fetch('/api/sesion');
+        const sd = await s.json();
+        if (!sd.activo) { window.location.href = '/admin/login'; return; }
+      } catch {}
+      try {
+        const r = await fetch('/api/reservas');
+        if (r.status === 401) { window.location.href = '/admin/login'; return; }
+        reservas = r.ok ? (await r.json()).reservas || [] : [];
+      } catch { reservas = []; }
+      try {
+        const r = await fetch('/api/barberos');
+        barberos = r.ok ? (await r.json()).barberos || [] : [];
+      } catch { barberos = []; }
+      renderTabla(); renderStats(); renderBarberos();
+    }
+
+    function renderTabla() {
+      const tbody = document.getElementById('tablaBody');
+      const empty = document.getElementById('emptyState');
+      if (!barberos.length) {
+        tbody.innerHTML = '';
+        empty.innerHTML = '<div class="empty-icon">✂️</div><p>Primero registra tus barberos en la sección de abajo.</p>';
+        empty.style.display = 'block'; return;
+      }
+      const lista = reservas.filter(r =>
+        (filtroActual==='todos'||r.estado===filtroActual) &&
+        (!busqueda||r.nombre.toLowerCase().includes(busqueda)||r.barbero.toLowerCase().includes(busqueda))
+      );
+      if (!lista.length) {
+        tbody.innerHTML = '';
+        empty.innerHTML = '<div class="empty-icon">📭</div><p>' +
+          (filtroActual !== 'todos' ? 'No hay reservas con ese filtro.' : 'Aún no hay reservas. Cuando los clientes agenden, aparecerán aquí.') + '</p>';
+        empty.style.display = 'block'; return;
+      }
+      empty.style.display = 'none';
+      tbody.innerHTML = lista.map(r => {
+        const ini = r.nombre.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+        const bc  = r.estado==='confirmada'?'badge-ok':r.estado==='pendiente'?'badge-pending':'badge-cancel';
+        const et  = r.estado.charAt(0).toUpperCase()+r.estado.slice(1);
+        return `<tr>
+          <td><span class="td-avatar">${ini}</span><span class="td-name">${r.nombre}</span><div class="td-sub" style="margin-left:40px">${r.telefono||''}</div></td>
+          <td>${r.barbero}</td><td>${r.servicio}</td><td>${r.hora}</td>
+          <td><span class="badge ${bc}">${et}</span></td>
+          <td><button class="btn-cancel" onclick="cancelarReserva(${r.id})" ${r.estado==='cancelada'?'disabled':''}>${r.estado==='cancelada'?'Cancelada':'Cancelar'}</button></td>
+        </tr>`;
+      }).join('');
+    }
+
+    function renderStats() {
+      document.getElementById('statHoy').textContent  = reservas.length;
+      document.getElementById('statConf').textContent = reservas.filter(r=>r.estado==='confirmada').length;
+      document.getElementById('statPend').textContent = reservas.filter(r=>r.estado==='pendiente').length;
+      document.getElementById('statBarb').textContent = barberos.length;
+      document.getElementById('trendBarb').textContent = barberos.length ? '↑ Visibles en reservas' : '';
+    }
+
+    function renderBarberos() {
+      const lista = document.getElementById('barberosList');
+      const vacio = document.getElementById('barberosEmpty');
+      if (!barberos.length) { lista.innerHTML = ''; vacio.style.display = 'block'; return; }
+      vacio.style.display = 'none';
+      lista.innerHTML = barberos.map(b => {
+        const ini   = b.nombre.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+        const citas = reservas.filter(r=>r.barbero===b.nombre&&r.estado!=='cancelada').length;
+        return `<div class="barber-card" id="bcard-${b.id}">
+          <div class="barber-av">${ini}</div>
+          <div class="barber-info">
+            <div class="barber-name">${b.nombre}</div>
+            <div class="barber-spec">${b.especialidad}</div>
+            <div class="barber-meta">
+              <span class="barber-chip">✂️ ${citas} citas hoy</span>
+              ${b.telefono?`<span class="barber-chip">📱 ${b.telefono}</span>`:''}
+            </div>
+          </div>
+          <div class="barber-dot"></div>
+          <button class="btn-del" onclick="confirmarEliminar(${b.id},'${b.nombre.replace(/'/g,"\\'")}')">Eliminar</button>
+        </div>`;
+      }).join('');
+    }
+
+    async function cancelarReserva(id) {
+      const r = reservas.find(x=>x.id===id);
+      if (!r||r.estado==='cancelada') return;
+      try { await fetch(`/api/cancelar/${id}`,{method:'POST'}); } catch {}
+      reservas = reservas.map(x=>x.id===id?{...x,estado:'cancelada'}:x);
+      renderTabla(); renderStats(); renderBarberos();
+      showToast('success',`✓ Cita de ${r.nombre} cancelada.`);
+    }
+
+    document.getElementById('addForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      ['err-nombre','err-esp','err-tel'].forEach(id=>document.getElementById(id).textContent='');
+      ['b-nombre','b-esp','b-tel'].forEach(id=>document.getElementById(id).classList.remove('error'));
+      const nombre = document.getElementById('b-nombre').value.trim();
+      const esp    = document.getElementById('b-esp').value;
+      const tel    = document.getElementById('b-tel').value.trim();
+      let ok = true;
+      if (!nombre) { document.getElementById('err-nombre').textContent='El nombre es obligatorio.'; document.getElementById('b-nombre').classList.add('error'); ok=false; }
+      else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nombre)) { document.getElementById('err-nombre').textContent='Solo letras y espacios.'; document.getElementById('b-nombre').classList.add('error'); ok=false; }
+      else if (barberos.some(b=>b.nombre.toLowerCase()===nombre.toLowerCase())) { document.getElementById('err-nombre').textContent='Ya existe un barbero con ese nombre.'; document.getElementById('b-nombre').classList.add('error'); ok=false; }
+      if (!esp) { document.getElementById('err-esp').textContent='Selecciona una especialidad.'; ok=false; }
+      if (tel && !/^[0-9]{7,10}$/.test(tel)) { document.getElementById('err-tel').textContent='Debe tener entre 7 y 10 dígitos.'; ok=false; }
+      if (!ok) return;
+      const nuevo = { nombre, especialidad: esp, telefono: tel };
+      try {
+        const res = await fetch('/api/barberos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(nuevo)});
+        if (res.ok) { const d=await res.json(); barberos.push({id:d.id,...nuevo}); }
+        else throw new Error();
+      } catch { const id = barberos.length ? Math.max(...barberos.map(b=>b.id))+1 : 1; barberos.push({id,...nuevo}); }
+      renderBarberos(); renderStats();
+      this.reset(); resetPreview();
+      showToast('success',`✓ ${nombre} agregado. Ya aparece en la página de reservas.`);
+    });
+
+    function confirmarEliminar(id, nombre) {
+      barberoAEliminar = id;
+      document.getElementById('modalMsg').textContent = `¿Seguro que quieres eliminar a ${nombre}? Dejará de aparecer en la página de reservas.`;
+      document.getElementById('modalOverlay').classList.add('show');
+    }
+    document.getElementById('btnConfirmDel').addEventListener('click', async function() {
+      if (!barberoAEliminar) return;
+      const b = barberos.find(x=>x.id===barberoAEliminar);
+      try { await fetch(`/api/barberos/${barberoAEliminar}`,{method:'DELETE'}); } catch {}
+      barberos = barberos.filter(x=>x.id!==barberoAEliminar);
+      renderBarberos(); renderStats();
+      showToast('success',`✓ ${b?.nombre||'Barbero'} eliminado.`);
+      cerrarModal();
+    });
+    function cerrarModal() { document.getElementById('modalOverlay').classList.remove('show'); barberoAEliminar=null; }
+    document.getElementById('modalOverlay').addEventListener('click',function(e){if(e.target===this)cerrarModal();});
+
+    document.getElementById('b-nombre').addEventListener('input', function() {
+      this.classList.remove('error');
+      const partes = this.value.trim().split(' ').filter(Boolean);
+      document.getElementById('avCircle').textContent = partes.length ? partes.map(p=>p[0].toUpperCase()).join('').slice(0,2) : '?';
+      document.getElementById('avName').textContent   = this.value.trim() || 'Nombre del barbero';
+    });
+    document.getElementById('b-esp').addEventListener('change', function() {
+      document.getElementById('avSpec').textContent = this.value || 'Especialidad';
+    });
+    function resetPreview() {
+      document.getElementById('avCircle').textContent = '?';
+      document.getElementById('avName').textContent   = 'Nombre del barbero';
+      document.getElementById('avSpec').textContent   = 'Especialidad';
+    }
+
+    function filtrar(estado, btn) {
+      filtroActual=estado;
+      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTabla();
+    }
+    document.getElementById('searchInput').addEventListener('input',function(){
+      busqueda=this.value.toLowerCase().trim(); renderTabla();
+    });
+
+    function setSection(el, titulo) {
+      document.querySelectorAll('.sidebar-nav a').forEach(a=>a.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('topbarTitle').textContent = titulo;
+    }
+
+    function showToast(type, msg) {
+      const t=document.getElementById('toast');
+      t.textContent=msg; t.className=`toast ${type} show`;
+      setTimeout(()=>t.classList.remove('show'),3500);
+    }
+
+    document.getElementById('btnLogout').addEventListener('click',()=>{
+      fetch('/admin/logout',{method:'POST'}).catch(()=>{});
+      window.location.href='/admin/login';
+    });
+
+    cargarDatos();
+  </script>
+</body>
+</html>

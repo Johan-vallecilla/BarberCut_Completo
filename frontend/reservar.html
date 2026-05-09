@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="BarberCut — Reserva tu cita en la barbería. Elige tu barbero, servicio y horario en segundos." />
+  <title>BarberCut — Reserva tu cita</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #ffffff;
+      --bg2:       #f8f9fb;
+      --bg3:       #f0f2f5;
+      --bg4:       #e8f5f0;
+      --accent:    #00a87e;
+      --accent2:   #008f6a;
+      --text:      #111827;
+      --gray:      #6b7280;
+      --gray2:     #9ca3af;
+      --border:    #e5e7eb;
+      --red:       #ef4444;
+      --yellow:    #d97706;
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --radius:    12px;
+      --radius-lg: 20px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAVBAR ── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 40px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+    .nav-logo { font-family: var(--font-head); font-size: 20px; font-weight: 800; letter-spacing: -0.02em; color: var(--text); }
+    .nav-logo span { color: var(--accent); }
+    .nav-back {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--gray);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 8px 16px; transition: all 0.2s;
+    }
+    .nav-back:hover { color: var(--text); border-color: var(--gray2); }
+
+    /* ── LAYOUT PRINCIPAL ── */
+    .page {
+      min-height: 100vh;
+      padding: 100px 24px 60px;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 40px;
+      align-items: start;
+    }
+
+    /* ── PANEL IZQUIERDO — INFO ── */
+    .info-panel { position: sticky; top: 100px; }
+
+    .info-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--accent);
+      border: 1px solid rgba(0,168,126,0.25);
+      background: rgba(0,168,126,0.06);
+      padding: 6px 14px; border-radius: 20px;
+      margin-bottom: 24px;
+    }
+    .info-badge span { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+    .info-title {
+      font-family: var(--font-head);
+      font-size: clamp(30px, 4vw, 48px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+    .info-title em { color: var(--accent); font-style: normal; }
+
+    .info-sub { font-size: 15px; color: var(--gray); line-height: 1.7; margin-bottom: 36px; max-width: 420px; }
+
+    /* Beneficios */
+    .benefits { display: flex; flex-direction: column; gap: 14px; margin-bottom: 36px; }
+    .benefit {
+      display: flex; align-items: flex-start; gap: 14px;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 16px;
+    }
+    .benefit-icon {
+      width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 16px;
+    }
+    .benefit-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; color: var(--text); }
+    .benefit-desc  { font-size: 12px; color: var(--gray); line-height: 1.4; }
+
+    /* Barberos preview */
+    .barbers-preview { margin-bottom: 0; }
+    .bp-label { font-size: 12px; color: var(--gray2); margin-bottom: 12px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+    .bp-grid  { display: flex; gap: 10px; flex-wrap: wrap; }
+    .bp-card  {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 10px 14px;
+      transition: border-color 0.2s;
+    }
+    .bp-card:hover { border-color: rgba(0,168,126,0.3); }
+    .bp-av {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(0,168,126,0.1); color: var(--accent);
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .bp-name { font-size: 12px; font-weight: 600; margin-bottom: 1px; color: var(--text); }
+    .bp-spec { font-size: 11px; color: var(--gray2); }
+    .bp-dot  { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-left: auto; }
+
+    /* ── PANEL DERECHO — FORMULARIO ── */
+    .form-panel {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .form-header {
+      background: var(--bg2);
+      padding: 24px 28px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .form-header h2 { font-family: var(--font-head); font-size: 18px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+    .form-header p  { font-size: 13px; color: var(--gray); }
+
+    /* Chips resumen */
+    .resumen-live { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px; }
+    .res-chip {
+      font-size: 11px; padding: 4px 10px; border-radius: 20px;
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--gray2); transition: all 0.2s;
+    }
+    .res-chip.filled { border-color: var(--accent); color: var(--accent); background: rgba(0,168,126,0.08); }
+
+    /* Form body */
+    .form-body { padding: 24px 28px; }
+
+    /* Servicios */
+    .servicios-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 6px; }
+    .servicio-card {
+      border: 1.5px solid var(--border); border-radius: var(--radius);
+      padding: 12px; cursor: pointer; transition: all 0.2s;
+      display: flex; flex-direction: column; gap: 3px;
+      background: var(--bg2);
+    }
+    .servicio-card:hover  { border-color: rgba(0,168,126,0.4); }
+    .servicio-card.active { border-color: var(--accent); background: rgba(0,168,126,0.06); }
+    .sc-name  { font-size: 13px; font-weight: 600; color: var(--text); }
+    .sc-price { font-size: 12px; color: var(--accent); font-weight: 700; }
+    .sc-time  { font-size: 11px; color: var(--gray2); }
+    .sc-check {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; margin-left: auto; margin-top: 4px;
+      transition: all 0.2s; color: transparent;
+    }
+    .servicio-card.active .sc-check { background: var(--accent); border-color: var(--accent); color: #ffffff; }
+
+    /* Barberos */
+    .barberos-grid { display: flex; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+    .barbero-card {
+      flex: 1; min-width: 100px;
+      border: 1.5px solid var(--border); border-radius: var(--radius);
+      padding: 12px 10px; cursor: pointer; transition: all 0.2s;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      background: var(--bg2); text-align: center;
+    }
+    .barbero-card:hover  { border-color: rgba(0,168,126,0.4); }
+    .barbero-card.active { border-color: var(--accent); background: rgba(0,168,126,0.06); }
+    .bc-av {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(0,168,126,0.1); color: var(--accent);
+      font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .barbero-card.active .bc-av { background: rgba(0,168,126,0.2); }
+    .bc-name { font-size: 12px; font-weight: 600; color: var(--text); }
+    .bc-spec { font-size: 10px; color: var(--gray2); }
+
+    /* Horarios */
+    .horarios-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 6px; }
+    .hora-chip {
+      border: 1.5px solid var(--border); border-radius: 8px;
+      padding: 9px 4px; cursor: pointer; transition: all 0.2s;
+      font-size: 12px; font-weight: 500; text-align: center;
+      background: var(--bg2); color: var(--gray);
+    }
+    .hora-chip:hover:not(.bloqueada)  { border-color: rgba(0,168,126,0.4); color: var(--text); }
+    .hora-chip.active   { border-color: var(--accent); background: rgba(0,168,126,0.08); color: var(--accent); font-weight: 700; }
+    .hora-chip.bloqueada { opacity: 0.35; cursor: not-allowed; border-color: var(--border); color: var(--gray2); text-decoration: line-through; }
+    .hora-chip.bloqueada::after { content: " ✗"; font-size: 9px; }
+
+    /* Form groups */
+    .form-section { margin-bottom: 22px; }
+    .form-section-label {
+      font-size: 12px; font-weight: 600; color: var(--gray);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      margin-bottom: 10px; display: block;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+    .form-row   { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    label       { font-size: 12px; font-weight: 500; color: var(--gray); }
+    input, select {
+      background: var(--bg2); border: 1.5px solid var(--border);
+      border-radius: 8px; padding: 11px 14px;
+      color: var(--text); font-family: var(--font-body); font-size: 13px;
+      transition: border-color 0.2s; outline: none; width: 100%;
+    }
+    input::placeholder { color: var(--gray2); }
+    input:focus, select:focus { border-color: var(--accent); }
+    input.error, select.error { border-color: var(--red); }
+    select option { background: var(--bg); color: var(--text); }
+    .form-error { font-size: 11px; color: var(--red); min-height: 14px; }
+    .form-divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+    /* Botón submit */
+    .btn-submit {
+      width: 100%; padding: 15px;
+      background: var(--accent); color: #ffffff;
+      font-family: var(--font-head); font-weight: 700; font-size: 15px;
+      border: none; border-radius: 10px; cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .btn-submit:hover { background: var(--accent2); transform: translateY(-2px); }
+
+    .form-note {
+      text-align: center; margin-top: 12px;
+      font-size: 11px; color: var(--gray2);
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+
+    /* Pantalla de éxito */
+    .success-screen {
+      display: none; flex-direction: column;
+      align-items: center; text-align: center;
+      padding: 48px 28px; gap: 16px;
+    }
+    .success-screen.show { display: flex; }
+    .success-ring {
+      width: 80px; height: 80px; border-radius: 50%;
+      border: 2px solid var(--accent);
+      background: rgba(0,168,126,0.08);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+    }
+    .success-screen h2 { font-family: var(--font-head); font-size: 22px; font-weight: 700; color: var(--text); }
+    .success-screen p  { font-size: 14px; color: var(--gray); line-height: 1.6; max-width: 300px; }
+    .success-card {
+      width: 100%;
+      background: var(--bg2);
+      border: 1px solid rgba(0,168,126,0.2);
+      border-radius: var(--radius);
+      padding: 16px; text-align: left;
+    }
+    .sc-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .sc-row:last-child { border-bottom: none; }
+    .sc-key { color: var(--gray); }
+    .sc-val { font-weight: 600; color: var(--text); }
+    .btn-nueva {
+      width: 100%; padding: 12px;
+      background: transparent; color: var(--text);
+      font-family: var(--font-head); font-weight: 600; font-size: 14px;
+      border: 1px solid var(--border); border-radius: 10px; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-nueva:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Sección mi cita */
+    .micita-section { margin-top: 60px; padding-top: 60px; border-top: 1px solid var(--border); }
+    .micita-header { margin-bottom: 32px; }
+    .micita-header h2 {
+      font-family: var(--font-head); font-size: clamp(24px, 3vw, 36px);
+      font-weight: 800; line-height: 1.15; margin-bottom: 10px; color: var(--text);
+    }
+    .micita-header h2 em { color: var(--accent); font-style: normal; }
+    .micita-header p { font-size: 14px; color: var(--gray); max-width: 420px; }
+
+    .micita-layout { display: grid; grid-template-columns: 1fr 400px; gap: 40px; align-items: start; }
+
+    .micita-buscar {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    }
+    .micita-buscar-header {
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+    }
+    .micita-buscar-header h3 { font-family: var(--font-head); font-size: 15px; font-weight: 700; margin-bottom: 3px; color: var(--text); }
+    .micita-buscar-header p  { font-size: 12px; color: var(--gray); }
+    .micita-buscar-body { padding: 20px 24px; }
+    .tel-row { display: flex; gap: 8px; }
+    .tel-input {
+      flex: 1; background: var(--bg2); border: 1.5px solid var(--border);
+      border-radius: 8px; padding: 11px 14px; color: var(--text);
+      font-family: var(--font-body); font-size: 13px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .tel-input::placeholder { color: var(--gray2); }
+    .tel-input:focus { border-color: var(--accent); }
+    .tel-input.error { border-color: var(--red); }
+    .btn-buscar {
+      background: var(--accent); color: #ffffff;
+      font-family: var(--font-head); font-weight: 700; font-size: 13px;
+      border: none; border-radius: 8px; padding: 11px 18px;
+      cursor: pointer; transition: background 0.2s; white-space: nowrap;
+    }
+    .btn-buscar:hover { background: var(--accent2); }
+    .btn-buscar:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Resultados */
+    .citas-resultado { margin-top: 16px; }
+    .cita-card-mc {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px; margin-bottom: 10px;
+      transition: border-color 0.2s;
+    }
+    .cita-card-mc:hover { border-color: rgba(0,168,126,0.2); }
+    .cita-mc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+    .cita-mc-barbero { font-size: 14px; font-weight: 700; font-family: var(--font-head); margin-bottom: 2px; color: var(--text); }
+    .cita-mc-servicio { font-size: 12px; color: var(--gray); }
+    .badge-mc-ok   { display:inline-block; font-size:11px; font-weight:600; padding:3px 10px; border-radius:20px; background:rgba(0,168,126,0.1); color:var(--accent); }
+    .badge-mc-pend { display:inline-block; font-size:11px; font-weight:600; padding:3px 10px; border-radius:20px; background:rgba(217,119,6,0.1); color:var(--yellow); }
+    .cita-mc-detalles { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .cita-mc-det { background: var(--bg3); border-radius: 6px; padding: 6px 10px; font-size: 12px; color: var(--gray); }
+    .cita-mc-det strong { color: var(--text); display: block; font-size: 11px; margin-bottom: 1px; }
+    .btn-cancelar-mc {
+      width: 100%; padding: 9px;
+      background: transparent; border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 8px; color: var(--red);
+      font-family: var(--font-body); font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-cancelar-mc:hover { background: rgba(239,68,68,0.06); border-color: var(--red); }
+
+    .citas-vacio { text-align: center; padding: 24px 16px; color: var(--gray); font-size: 13px; }
+    .citas-vacio .icon { font-size: 28px; margin-bottom: 8px; }
+
+    .cancel-exito {
+      display: none; text-align: center; padding: 20px 16px;
+      background: rgba(0,168,126,0.06); border: 1px solid rgba(0,168,126,0.2);
+      border-radius: var(--radius); margin-top: 10px;
+    }
+    .cancel-exito.show { display: block; }
+    .cancel-exito p { font-size: 13px; color: var(--accent); font-weight: 500; }
+
+    /* Info lateral mi cita */
+    .micita-info { display: flex; flex-direction: column; gap: 14px; }
+    .micita-tip {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .tip-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .tip-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; color: var(--text); }
+    .tip-desc  { font-size: 12px; color: var(--gray); line-height: 1.5; }
+
+    /* Modal */
+    .modal-overlay-mc {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.4); z-index: 200;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay-mc.show { display: flex; }
+    .modal-mc {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px; max-width: 360px; width: 90%; text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+    .modal-mc-icon { font-size: 36px; margin-bottom: 14px; }
+    .modal-mc h3 { font-family: var(--font-head); font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+    .modal-mc p  { font-size: 13px; color: var(--gray); margin-bottom: 24px; line-height: 1.6; }
+    .modal-mc-btns { display: flex; gap: 10px; }
+    .modal-mc-btns button { flex: 1; padding: 11px; border-radius: 8px; font-family: var(--font-body); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-mc-si  { background: var(--red); color: #ffffff; border: none; }
+    .btn-mc-si:hover  { background: #dc2626; }
+    .btn-mc-no  { background: transparent; border: 1px solid var(--border); color: var(--gray); }
+    .btn-mc-no:hover  { border-color: var(--text); color: var(--text); }
+
+    @media (max-width: 860px) {
+      .micita-layout { grid-template-columns: 1fr; }
+      .page { grid-template-columns: 1fr; padding-top: 90px; }
+      .info-panel { position: static; }
+      .info-title { font-size: 32px; }
+      .horarios-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .navbar { padding: 16px 20px; }
+      .page { padding: 80px 16px 40px; }
+      .form-body { padding: 18px; }
+      .form-header { padding: 18px; }
+      .servicios-grid { grid-template-columns: 1fr; }
+      .horarios-grid { grid-template-columns: repeat(3, 1fr); }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="/" class="nav-logo">Barber<span>Cut</span></a>
+    <a href="/" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Volver al inicio
+    </a>
+  </nav>
+
+  <!-- PÁGINA PRINCIPAL -->
+  <div class="page">
+
+    <!-- ── PANEL IZQUIERDO ── -->
+    <div class="info-panel">
+      <div class="info-badge">
+        <span></span> Disponibilidad en tiempo real
+      </div>
+      <h1 class="info-title">Agenda tu cita<br><em>en segundos.</em></h1>
+      <p class="info-sub">Elige tu barbero favorito, selecciona el servicio y escoge el horario que más te convenga. Sin llamadas, sin filas.</p>
+
+      <div class="benefits">
+        <div class="benefit">
+          <div class="benefit-icon" style="background:rgba(0,168,126,0.1);">✓</div>
+          <div>
+            <div class="benefit-title">Sin necesidad de crear cuenta</div>
+            <div class="benefit-desc">Solo tu nombre y teléfono. Listo en menos de un minuto.</div>
+          </div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-icon" style="background:rgba(123,104,238,0.1);">📅</div>
+          <div>
+            <div class="benefit-title">Confirmación inmediata</div>
+            <div class="benefit-desc">Tu cita queda registrada al instante en el sistema de la barbería.</div>
+          </div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-icon" style="background:rgba(217,119,6,0.1);">🔔</div>
+          <div>
+            <div class="benefit-title">Cancela cuando quieras</div>
+            <div class="benefit-desc">¿Cambiaron tus planes? No hay problema. Sin penalizaciones.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="barbers-preview">
+        <div class="bp-label">Barberos disponibles hoy</div>
+        <div class="bp-grid" id="bpGrid">
+          <div style="font-size:12px;color:var(--gray2);">Cargando...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PANEL DERECHO — FORMULARIO ── -->
+    <div class="form-panel">
+      <div class="form-header">
+        <h2>Nueva reserva</h2>
+        <p>Completa los campos para confirmar tu cita</p>
+        <div class="resumen-live">
+          <span class="res-chip" id="chip-servicio">Servicio</span>
+          <span class="res-chip" id="chip-barbero">Barbero</span>
+          <span class="res-chip" id="chip-fecha">Fecha</span>
+          <span class="res-chip" id="chip-hora">Hora</span>
+        </div>
+      </div>
+
+      <form class="form-body" id="reservaForm" novalidate>
+
+        <!-- Servicio -->
+        <div class="form-section">
+          <span class="form-section-label">1 · Elige tu servicio</span>
+          <div class="servicios-grid">
+            <div class="servicio-card" data-value="Corte clásico" onclick="selServicio(this)">
+              <div class="sc-name">Corte clásico</div>
+              <div class="sc-price">$15.000</div>
+              <div class="sc-time">⏱ 30 min</div>
+              <div class="sc-check">✓</div>
+            </div>
+            <div class="servicio-card" data-value="Corte + Fade" onclick="selServicio(this)">
+              <div class="sc-name">Corte + Fade</div>
+              <div class="sc-price">$25.000</div>
+              <div class="sc-time">⏱ 45 min</div>
+              <div class="sc-check">✓</div>
+            </div>
+            <div class="servicio-card" data-value="Arreglo de barba" onclick="selServicio(this)">
+              <div class="sc-name">Arreglo de barba</div>
+              <div class="sc-price">$12.000</div>
+              <div class="sc-time">⏱ 20 min</div>
+              <div class="sc-check">✓</div>
+            </div>
+            <div class="servicio-card" data-value="Corte + Barba" onclick="selServicio(this)">
+              <div class="sc-name">Corte + Barba</div>
+              <div class="sc-price">$30.000</div>
+              <div class="sc-time">⏱ 60 min</div>
+              <div class="sc-check">✓</div>
+            </div>
+          </div>
+          <input type="hidden" id="servicio" name="servicio" />
+          <span class="form-error" id="err-servicio"></span>
+        </div>
+
+        <hr class="form-divider" />
+
+        <!-- Barbero -->
+        <div class="form-section">
+          <span class="form-section-label">2 · Elige tu barbero</span>
+          <div class="barberos-grid" id="barberosGrid">
+            <div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--gray);font-size:13px;">Cargando barberos...</div>
+          </div>
+          <input type="hidden" id="barbero" name="barbero" />
+          <span class="form-error" id="err-barbero"></span>
+        </div>
+
+        <hr class="form-divider" />
+
+        <!-- Fecha y hora -->
+        <div class="form-section">
+          <span class="form-section-label">3 · Elige fecha y hora</span>
+          <div class="form-group" style="margin-bottom:14px;">
+            <label for="fecha">Fecha</label>
+            <input type="date" id="fecha" name="fecha" />
+            <span class="form-error" id="err-fecha"></span>
+          </div>
+          <label style="font-size:12px;font-weight:500;color:var(--gray);display:block;margin-bottom:8px;">Hora disponible</label>
+          <div class="horarios-grid">
+            <div class="hora-chip" data-value="09:00" onclick="selHora(this)">9:00 AM</div>
+            <div class="hora-chip" data-value="09:30" onclick="selHora(this)">9:30 AM</div>
+            <div class="hora-chip" data-value="10:00" onclick="selHora(this)">10:00 AM</div>
+            <div class="hora-chip" data-value="10:30" onclick="selHora(this)">10:30 AM</div>
+            <div class="hora-chip" data-value="11:00" onclick="selHora(this)">11:00 AM</div>
+            <div class="hora-chip" data-value="11:30" onclick="selHora(this)">11:30 AM</div>
+            <div class="hora-chip" data-value="14:00" onclick="selHora(this)">2:00 PM</div>
+            <div class="hora-chip" data-value="14:30" onclick="selHora(this)">2:30 PM</div>
+            <div class="hora-chip" data-value="15:00" onclick="selHora(this)">3:00 PM</div>
+            <div class="hora-chip" data-value="15:30" onclick="selHora(this)">3:30 PM</div>
+            <div class="hora-chip" data-value="16:00" onclick="selHora(this)">4:00 PM</div>
+            <div class="hora-chip" data-value="17:00" onclick="selHora(this)">5:00 PM</div>
+          </div>
+          <input type="hidden" id="hora" name="hora" />
+          <span class="form-error" id="err-hora"></span>
+        </div>
+
+        <hr class="form-divider" />
+
+        <!-- Datos personales -->
+        <div class="form-section">
+          <span class="form-section-label">4 · Tus datos</span>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nombre">Nombre completo</label>
+              <input type="text" id="nombre" name="nombre" placeholder="Carlos Rodríguez" />
+              <span class="form-error" id="err-nombre"></span>
+            </div>
+            <div class="form-group">
+              <label for="telefono">Teléfono / WhatsApp</label>
+              <input type="tel" id="telefono" name="telefono" placeholder="3001234567" />
+              <span class="form-error" id="err-telefono"></span>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Confirmar reserva →</button>
+        <p class="form-note">🔒 Tus datos están seguros y no se comparten con terceros.</p>
+        <p style="text-align:center;margin-top:14px;font-size:12px;color:var(--gray2);">
+          ¿Ya tienes una cita? <a href="#micita-anchor" style="color:var(--accent);text-decoration:none;font-weight:500;">Consultar o cancelar ↓</a>
+        </p>
+
+      </form>
+
+      <!-- Pantalla de éxito -->
+      <div class="success-screen" id="successScreen">
+        <div class="success-ring">✓</div>
+        <h2>¡Reserva confirmada!</h2>
+        <p>Tu cita ha sido agendada exitosamente. Te esperamos.</p>
+        <div class="success-card" id="successCard"></div>
+        <button class="btn-nueva" onclick="nuevaReserva()">Hacer otra reserva</button>
+        <a href="/" style="font-size:13px;color:var(--gray);">← Volver al inicio</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SECCIÓN MI CITA -->
+  <div class="micita-section" id="micita-anchor" style="max-width:1100px;margin:0 auto;padding-left:24px;padding-right:24px;padding-bottom:80px;">
+    <div class="micita-header">
+      <span class="info-badge" style="margin-bottom:16px;"><span></span> Gestiona tu cita</span>
+      <h2>¿Ya tienes una cita?<br><em>Consúltala aquí.</em></h2>
+      <p>Ingresa tu teléfono para ver tus reservas activas y cancelarlas si lo necesitas.</p>
+    </div>
+
+    <div class="micita-layout">
+      <div class="micita-buscar">
+        <div class="micita-buscar-header">
+          <h3>Buscar mi cita</h3>
+          <p>Usamos tu teléfono para encontrar tus reservas</p>
+        </div>
+        <div class="micita-buscar-body">
+          <div class="tel-row">
+            <input type="tel" class="tel-input" id="mcTel" placeholder="Ej: 3001234567" maxlength="10" />
+            <button class="btn-buscar" id="mcBuscarBtn" onclick="mcBuscar()">Buscar</button>
+          </div>
+          <span class="form-error" id="mcTelError" style="display:block;margin-top:6px;"></span>
+          <div class="citas-resultado" id="mcResultado"></div>
+          <div class="cancel-exito" id="mcCancelExito">
+            <p>✓ Tu cita fue cancelada. El horario ya está disponible.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="micita-info">
+        <div class="micita-tip">
+          <div class="tip-icon">🔍</div>
+          <div>
+            <div class="tip-title">¿Cómo funciona?</div>
+            <div class="tip-desc">Ingresa el mismo número que usaste al reservar. Verás todas tus citas activas.</div>
+          </div>
+        </div>
+        <div class="micita-tip">
+          <div class="tip-icon">❌</div>
+          <div>
+            <div class="tip-title">¿Puedo cancelar?</div>
+            <div class="tip-desc">Sí, sin costo ni penalización. El horario queda disponible al instante.</div>
+          </div>
+        </div>
+        <div class="micita-tip">
+          <div class="tip-icon">📅</div>
+          <div>
+            <div class="tip-title">¿Quieres reagendar?</div>
+            <div class="tip-desc">Cancela tu cita actual y usa el formulario de arriba para elegir un nuevo horario.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal cancelación -->
+  <div class="modal-overlay-mc" id="mcModalOverlay">
+    <div class="modal-mc">
+      <div class="modal-mc-icon">⚠️</div>
+      <h3>¿Cancelar tu cita?</h3>
+      <p id="mcModalMsg">Esta acción no se puede deshacer.</p>
+      <div class="modal-mc-btns">
+        <button class="btn-mc-no" onclick="mcCerrarModal()">No, mantener</button>
+        <button class="btn-mc-si" id="mcBtnConfirmar">Sí, cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function cargarBarberos() {
+      document.getElementById('barberosGrid').innerHTML =
+        '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--gray);font-size:13px;">Cargando barberos...</div>';
+      document.getElementById('bpGrid').innerHTML =
+        '<div style="font-size:12px;color:var(--gray2);">Cargando...</div>';
+      try {
+        const res = await fetch('/api/barberos-publico');
+        if (res.ok) { const d = await res.json(); renderBarberos(d.barberos || []); }
+        else renderBarberos([]);
+      } catch { renderBarberos([]); }
+    }
+
+    function renderBarberos(lista) {
+      const grid = document.getElementById('barberosGrid');
+      if (!lista.length) {
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:24px 16px;">
+          <div style="font-size:28px;margin-bottom:10px;">✂️</div>
+          <p style="font-size:13px;color:var(--gray);line-height:1.6;">No hay barberos disponibles por el momento.</p>
+        </div>`;
+      } else {
+        grid.innerHTML = lista.map(b => {
+          const ini = b.nombre.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+          return `<div class="barbero-card" data-value="${b.nombre}" onclick="selBarbero(this)">
+            <div class="bc-av">${ini}</div>
+            <div class="bc-name">${b.nombre}</div>
+            <div class="bc-spec">${b.especialidad}</div>
+          </div>`;
+        }).join('');
+      }
+      const bpGrid = document.getElementById('bpGrid');
+      if (!lista.length) {
+        bpGrid.innerHTML = '<div style="font-size:12px;color:var(--gray2);">Sin barberos registrados aún.</div>';
+      } else {
+        bpGrid.innerHTML = lista.map(b => {
+          const ini = b.nombre.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+          return `<div class="bp-card">
+            <div class="bp-av">${ini}</div>
+            <div><div class="bp-name">${b.nombre}</div><div class="bp-spec">${b.especialidad}</div></div>
+            <div class="bp-dot"></div>
+          </div>`;
+        }).join('');
+      }
+    }
+
+    const fechaInput = document.getElementById('fecha');
+    fechaInput.min = new Date().toISOString().split('T')[0];
+
+    let estado = { servicio: '', barbero: '', hora: '' };
+
+    function selServicio(el) {
+      document.querySelectorAll('.servicio-card').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      estado.servicio = el.dataset.value;
+      document.getElementById('servicio').value = estado.servicio;
+      actualizarChip('chip-servicio', estado.servicio);
+      limpiarError('err-servicio');
+    }
+
+    function selBarbero(el) {
+      document.querySelectorAll('.barbero-card').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      estado.barbero = el.dataset.value;
+      document.getElementById('barbero').value = estado.barbero;
+      actualizarChip('chip-barbero', estado.barbero);
+      limpiarError('err-barbero');
+      if (document.getElementById('fecha').value) cargarHorasOcupadas();
+    }
+
+    function selHora(el) {
+      if (el.classList.contains('bloqueada')) return;
+      document.querySelectorAll('.hora-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      estado.hora = el.dataset.value;
+      document.getElementById('hora').value = estado.hora;
+      actualizarChip('chip-hora', estado.hora);
+      limpiarError('err-hora');
+    }
+
+    async function cargarHorasOcupadas() {
+      const barbero = estado.barbero;
+      const fecha   = document.getElementById('fecha').value;
+      if (!barbero || !fecha) return;
+      estado.hora = '';
+      document.getElementById('hora').value = '';
+      document.querySelectorAll('.hora-chip').forEach(c => { c.classList.remove('active', 'bloqueada'); c.title = ''; });
+      try {
+        const res = await fetch(`/api/horas-ocupadas?barbero=${encodeURIComponent(barbero)}&fecha=${fecha}`);
+        if (res.ok) {
+          const data = await res.json();
+          data.ocupadas.forEach(hora => {
+            const chip = document.querySelector(`.hora-chip[data-value="${hora}"]`);
+            if (chip) { chip.classList.add('bloqueada'); chip.title = 'Hora no disponible'; }
+          });
+        }
+      } catch {}
+    }
+
+    function actualizarChip(id, valor) {
+      const chip = document.getElementById(id);
+      chip.textContent = valor;
+      chip.classList.add('filled');
+    }
+
+    fechaInput.addEventListener('change', function() {
+      if (this.value) {
+        const d = new Date(this.value + 'T00:00:00');
+        const str = d.toLocaleDateString('es-CO', { day: 'numeric', month: 'short' });
+        actualizarChip('chip-fecha', str);
+        limpiarError('err-fecha');
+        cargarHorasOcupadas();
+      }
+    });
+
+    function mostrarError(id, msg) { document.getElementById(id).textContent = msg; }
+    function limpiarError(id)      { document.getElementById(id).textContent = ''; }
+    function marcarError(id) {
+      const el = document.getElementById(id);
+      if (el && el.tagName === 'INPUT') {
+        el.classList.add('error');
+        el.addEventListener('input', () => el.classList.remove('error'), { once: true });
+      }
+    }
+
+    function validar() {
+      let ok = true;
+      ['err-servicio','err-barbero','err-fecha','err-hora','err-nombre','err-telefono'].forEach(limpiarError);
+      if (!estado.servicio) { mostrarError('err-servicio', 'Selecciona un servicio.'); ok = false; }
+      if (!estado.barbero)  { mostrarError('err-barbero',  'Selecciona un barbero.');  ok = false; }
+      const fecha = document.getElementById('fecha').value;
+      if (!fecha) {
+        mostrarError('err-fecha', 'Selecciona una fecha.'); marcarError('fecha'); ok = false;
+      } else {
+        const sel = new Date(fecha + 'T00:00:00');
+        const hoyDate = new Date(); hoyDate.setHours(0,0,0,0);
+        if (sel < hoyDate) { mostrarError('err-fecha', 'La fecha no puede ser en el pasado.'); marcarError('fecha'); ok = false; }
+      }
+      if (!estado.hora) { mostrarError('err-hora', 'Selecciona una hora.'); ok = false; }
+      const nombre = document.getElementById('nombre').value.trim();
+      if (!nombre) { mostrarError('err-nombre', 'El nombre es obligatorio.'); marcarError('nombre'); ok = false; }
+      else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nombre)) { mostrarError('err-nombre', 'Solo letras y espacios.'); marcarError('nombre'); ok = false; }
+      const tel = document.getElementById('telefono').value.trim();
+      if (!tel) { mostrarError('err-telefono', 'El teléfono es obligatorio.'); marcarError('telefono'); ok = false; }
+      else if (!/^[0-9]{7,10}$/.test(tel)) { mostrarError('err-telefono', 'Debe tener 7-10 dígitos.'); marcarError('telefono'); ok = false; }
+      return ok;
+    }
+
+    document.getElementById('reservaForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      if (!validar()) return;
+      const nombre   = document.getElementById('nombre').value.trim();
+      const telefono = document.getElementById('telefono').value.trim();
+      const fecha    = document.getElementById('fecha').value;
+      const btn      = document.querySelector('.btn-submit');
+      btn.textContent = 'Confirmando...';
+      btn.disabled    = true;
+      const datos = { nombre, telefono, barbero: estado.barbero, servicio: estado.servicio, fecha, hora: estado.hora };
+      try {
+        const res = await fetch('/api/reservar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) });
+        if (res.status === 409) {
+          const err = await res.json();
+          mostrarError('err-hora', err.detail || 'Este horario no está disponible. Elige otro.');
+          const chip = document.querySelector(`.hora-chip[data-value="${estado.hora}"]`);
+          if (chip) chip.classList.add('bloqueada');
+          estado.hora = '';
+          document.getElementById('hora').value = '';
+          btn.disabled = false; btn.textContent = 'Confirmar reserva →';
+          return;
+        }
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          mostrarError('err-hora', err.detail || 'Error al guardar. Intenta de nuevo.');
+          btn.disabled = false; btn.textContent = 'Confirmar reserva →';
+          return;
+        }
+      } catch {
+        mostrarError('err-nombre', '⚠ El servidor no está activo.');
+        btn.disabled = false; btn.textContent = 'Confirmar reserva →';
+        return;
+      }
+      const fechaStr = new Date(fecha + 'T00:00:00').toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' });
+      document.getElementById('successCard').innerHTML = `
+        <div class="sc-row"><span class="sc-key">Cliente</span><span class="sc-val">${nombre}</span></div>
+        <div class="sc-row"><span class="sc-key">Barbero</span><span class="sc-val">${estado.barbero}</span></div>
+        <div class="sc-row"><span class="sc-key">Servicio</span><span class="sc-val">${estado.servicio}</span></div>
+        <div class="sc-row"><span class="sc-key">Fecha</span><span class="sc-val">${fechaStr}</span></div>
+        <div class="sc-row"><span class="sc-key">Hora</span><span class="sc-val">${estado.hora}</span></div>
+      `;
+      document.getElementById('reservaForm').style.display = 'none';
+      document.getElementById('successScreen').classList.add('show');
+    });
+
+    function nuevaReserva() {
+      document.getElementById('reservaForm').reset();
+      document.getElementById('reservaForm').style.display = '';
+      document.getElementById('successScreen').classList.remove('show');
+      document.querySelectorAll('.servicio-card, .barbero-card, .hora-chip').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.res-chip').forEach(el => {
+        el.classList.remove('filled');
+        el.textContent = el.id.replace('chip-', '').charAt(0).toUpperCase() + el.id.replace('chip-', '').slice(1);
+      });
+      estado = { servicio: '', barbero: '', hora: '' };
+      document.querySelector('.btn-submit').disabled = false;
+      document.querySelector('.btn-submit').textContent = 'Confirmar reserva →';
+    }
+
+    let mcCitaAEliminar = null;
+    let mcCitasActuales = [];
+
+    document.getElementById('mcTel').addEventListener('keydown', function(e) { if (e.key === 'Enter') mcBuscar(); });
+
+    async function mcBuscar() {
+      const tel   = document.getElementById('mcTel').value.trim();
+      const error = document.getElementById('mcTelError');
+      const btn   = document.getElementById('mcBuscarBtn');
+      error.textContent = '';
+      document.getElementById('mcTel').classList.remove('error');
+      document.getElementById('mcCancelExito').classList.remove('show');
+      document.getElementById('mcResultado').innerHTML = '';
+      if (!tel) { error.textContent = 'Ingresa tu número de teléfono.'; document.getElementById('mcTel').classList.add('error'); return; }
+      if (!/^[0-9]{7,10}$/.test(tel)) { error.textContent = 'Debe tener entre 7 y 10 dígitos.'; document.getElementById('mcTel').classList.add('error'); return; }
+      btn.textContent = 'Buscando...'; btn.disabled = true;
+      try {
+        const r = await fetch(`/api/miscita?telefono=${encodeURIComponent(tel)}`);
+        mcCitasActuales = r.ok ? (await r.json()).reservas || [] : [];
+      } catch {
+        error.textContent = '⚠ El servidor no está activo.';
+        mcCitasActuales = [];
+      }
+      btn.textContent = 'Buscar'; btn.disabled = false;
+      mcRenderCitas();
+    }
+
+    function mcRenderCitas() {
+      const wrap = document.getElementById('mcResultado');
+      if (!mcCitasActuales.length) {
+        wrap.innerHTML = `<div class="citas-vacio"><div class="icon">📭</div><p>No encontramos citas activas con ese número.</p></div>`;
+        return;
+      }
+      const badgeFn = e => e === 'confirmada' ? '<span class="badge-mc-ok">Confirmada</span>' : '<span class="badge-mc-pend">Pendiente</span>';
+      const fechaFn = f => { try { return new Date(f + 'T00:00:00').toLocaleDateString('es-CO', { weekday:'short', day:'numeric', month:'short' }); } catch { return f; } };
+      wrap.innerHTML = `<p style="font-size:12px;color:var(--gray2);margin-bottom:10px;font-weight:500;">${mcCitasActuales.length} cita${mcCitasActuales.length>1?'s':''} encontrada${mcCitasActuales.length>1?'s':''}</p>` +
+        mcCitasActuales.map(c => `
+        <div class="cita-card-mc" id="mccard-${c.id}">
+          <div class="cita-mc-top">
+            <div><div class="cita-mc-barbero">✂️ ${c.barbero}</div><div class="cita-mc-servicio">${c.servicio}</div></div>
+            ${badgeFn(c.estado)}
+          </div>
+          <div class="cita-mc-detalles">
+            <div class="cita-mc-det"><strong>Fecha</strong>${fechaFn(c.fecha)}</div>
+            <div class="cita-mc-det"><strong>Hora</strong>${c.hora}</div>
+          </div>
+          <button class="btn-cancelar-mc" onclick="mcConfirmarCancelacion(${c.id},'${c.barbero}','${c.fecha}','${c.hora}')">Cancelar esta cita</button>
+        </div>`).join('');
+    }
+
+    function mcConfirmarCancelacion(id, barbero, fecha, hora) {
+      mcCitaAEliminar = id;
+      const fechaStr = (() => { try { return new Date(fecha+'T00:00:00').toLocaleDateString('es-CO',{day:'numeric',month:'long'}); } catch { return fecha; } })();
+      document.getElementById('mcModalMsg').textContent = `¿Seguro que quieres cancelar tu cita con ${barbero} el ${fechaStr} a las ${hora}?`;
+      document.getElementById('mcModalOverlay').classList.add('show');
+    }
+
+    document.getElementById('mcBtnConfirmar').addEventListener('click', async function() {
+      if (!mcCitaAEliminar) return;
+      try { await fetch(`/api/cancelar-cliente/${mcCitaAEliminar}`, { method: 'POST' }); } catch {}
+      const card = document.getElementById(`mccard-${mcCitaAEliminar}`);
+      if (card) card.style.display = 'none';
+      mcCitasActuales = mcCitasActuales.filter(c => c.id !== mcCitaAEliminar);
+      if (!mcCitasActuales.length) {
+        document.getElementById('mcResultado').innerHTML = '';
+        document.getElementById('mcCancelExito').classList.add('show');
+        if (estado.barbero && document.getElementById('fecha').value) cargarHorasOcupadas();
+      }
+      mcCerrarModal();
+    });
+
+    function mcCerrarModal() { document.getElementById('mcModalOverlay').classList.remove('show'); mcCitaAEliminar = null; }
+    document.getElementById('mcModalOverlay').addEventListener('click', function(e) { if (e.target === this) mcCerrarModal(); });
+
+    cargarBarberos();
+  </script>
+</body>
+</html>
