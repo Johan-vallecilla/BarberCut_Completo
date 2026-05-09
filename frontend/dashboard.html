@@ -147,12 +147,50 @@
 
     @media (max-width: 1100px) { .stats-grid { grid-template-columns: repeat(2,1fr); } }
     @media (max-width: 900px)  { .barberos-layout { grid-template-columns: 1fr; } }
-    @media (max-width: 768px)  { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; } }
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+      .sidebar.open { transform: translateX(0); box-shadow: 4px 0 20px rgba(0,0,0,0.12); }
+      .main { margin-left: 0; }
+      .topbar { padding: 14px 16px; gap: 10px; }
+      .topbar-title { font-size: 15px; }
+      .topbar-date { display: none; }
+      .content { padding: 16px; }
+      .stats-grid { grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 20px; }
+      .stat-card { padding: 16px; }
+      .stat-num { font-size: 24px; }
+      .table-wrap { border-radius: 10px; }
+      .table-header { flex-direction: column; align-items: stretch; gap: 10px; padding: 14px; }
+      .table-search { width: 100%; }
+      .filter-btns { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
+      .filter-btn { white-space: nowrap; flex-shrink: 0; }
+      table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      thead th { font-size: 10px; padding: 10px 12px; }
+      tbody td { padding: 12px 12px; font-size: 12px; }
+      .td-sub { display: none; }
+      .barberos-layout { grid-template-columns: 1fr; }
+      .add-barber-card { position: static; }
+      .barber-card { padding: 14px 16px; }
+      .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 9; }
+      .sidebar-overlay.open { display: block; }
+      .mobile-menu-btn {
+        display: flex; align-items: center; justify-content: center;
+        width: 36px; height: 36px; border-radius: 8px;
+        border: 1px solid var(--border); background: var(--bg2);
+        cursor: pointer; flex-shrink: 0;
+      }
+      .mobile-menu-btn span { display: block; width: 16px; height: 1.5px; background: var(--text); border-radius: 1px; }
+      .mobile-menu-btn span+span { margin-top: 4px; }
+    }
+    @media (min-width: 769px) {
+      .mobile-menu-btn { display: none; }
+      .sidebar-overlay { display: none !important; }
+    }
   </style>
 </head>
 <body>
 
-  <aside class="sidebar">
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">Barber<span>Cut</span><span class="sidebar-badge">Panel Admin</span></div>
     <ul class="sidebar-nav">
       <li><a href="#reservas-section" class="active" onclick="setSection(this,'Reservas del día')"><span class="nav-icon">📅</span> Reservas</a></li>
@@ -170,6 +208,9 @@
 
   <main class="main">
     <div class="topbar">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
       <div class="topbar-title" id="topbarTitle">Reservas del día</div>
       <div class="topbar-date" id="topbarDate"></div>
     </div>
@@ -468,6 +509,21 @@
     });
 
     cargarDatos();
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('open');
+    }
+
+    // Cerrar sidebar al hacer clic en enlace (móvil)
+    document.querySelectorAll('.sidebar-nav a').forEach(a => {
+      a.addEventListener('click', () => {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('open');
+      });
+    });
   </script>
 </body>
 </html>

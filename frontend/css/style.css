@@ -723,8 +723,16 @@ input.error, select.error, textarea.error { border-color: var(--red); }
 .footer-links a { font-size: 13px; color: var(--gray2); transition: color var(--transition); }
 .footer-links a:hover { color: var(--accent); }
 
+
 /* ═══════════════════════════════════════
-   RESPONSIVE
+   TARJETAS FLOTANTES MÓVIL — base (ocultas en desktop)
+═══════════════════════════════════════ */
+.hero-cards-mobile { display: none; }
+.planes-wrapper-mobile { width: 100%; }
+.planes-scroll-hint { display: none; }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — TABLET
 ═══════════════════════════════════════ */
 @media (max-width: 900px) {
   .navbar { padding: 18px 24px; }
@@ -733,25 +741,234 @@ input.error, select.error, textarea.error { border-color: var(--red); }
   .nav-links.open { display: flex; }
   .nav-links a { font-size: 20px; color: var(--text); }
   .hamburger { display: flex; z-index: 100; }
-
   .hero { flex-direction: column; padding: 100px 24px 60px; text-align: center; gap: 40px; }
   .hero-btns { justify-content: center; }
   .hero-stats { justify-content: center; }
   .hero-visual { display: none; }
-
   .features-grid { grid-template-columns: 1fr; }
   .fc-large { grid-column: span 1; }
-
   .reservas-layout, .contacto-layout { grid-template-columns: 1fr; gap: 40px; }
   .planes-grid { grid-template-columns: 1fr; }
   .plan-popular { transform: none; }
   .plan-popular:hover { transform: translateY(-6px); }
-
   .footer-inner { flex-direction: column; text-align: center; }
 }
 
+/* ═══════════════════════════════════════
+   RESPONSIVE — MÓVIL (opción 3: tarjetas flotantes)
+═══════════════════════════════════════ */
 @media (max-width: 560px) {
+
+  /* ── Mostrar tarjetas flotantes en móvil ── */
+  .hero-cards-mobile { display: flex; flex-direction: column; }
+  .planes-scroll-hint { display: block; }
+
+  /* ── Navbar ── */
+  .navbar { padding: 14px 16px; }
+  .navbar.scrolled { padding: 10px 16px; }
+  .nav-logo { font-size: 19px; }
+
+  /* ── Hero: fondo verde claro con tarjetas flotantes ── */
+  .hero {
+    flex-direction: column;
+    padding: 80px 0 0;
+    text-align: center;
+    gap: 0;
+    background: linear-gradient(160deg, #e8f5f0 0%, #f0faf5 60%, #f8f9fb 100%);
+    min-height: auto;
+    overflow: visible;
+  }
+
+  /* Ocultar elementos decorativos del hero en móvil */
+  .hero-bg, .hero-visual { display: none; }
+
+  .hero-content {
+    padding: 0 20px 28px;
+    max-width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-badge {
+    font-size: 10px;
+    padding: 5px 12px;
+    margin-bottom: 16px;
+  }
+
+  .hero-title {
+    font-size: 34px;
+    margin-bottom: 14px;
+    letter-spacing: -0.03em;
+  }
+
+  .hero-sub {
+    font-size: 14px;
+    margin-bottom: 22px;
+    color: var(--gray);
+    max-width: 100%;
+  }
+
+  .hero-btns {
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .hero-btns .btn-primary,
+  .hero-btns .btn-ghost {
+    width: 100%;
+    text-align: center;
+    padding: 14px;
+    font-size: 15px;
+    border-radius: 12px;
+  }
+
+  /* Stats horizontales compactos */
+  .hero-stats {
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 0;
+    padding: 16px 20px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 14px;
+    border: 1px solid rgba(0,168,126,0.15);
+  }
+
+  .stat { flex: 1; text-align: center; }
+  .stat-num { font-size: 18px; }
+  .stat-label { font-size: 9px; }
+  .stat-divider { width: 1px; height: 32px; }
+
+  /* ── Tarjetas flotantes: se superponen al hero ── */
+  .hero-cards-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 16px;
+    margin-top: -8px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hcm-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 14px 16px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hcm-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    background: var(--bg4);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hcm-title {
+    font-family: var(--font-head);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .hcm-sub {
+    font-size: 11px;
+    color: var(--gray);
+  }
+
+  .hcm-val {
+    margin-left: auto;
+    font-family: var(--font-head);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  /* ── Secciones: padding reducido en móvil ── */
+  .servicios,
+  .nosotros,
+  .precios,
+  .contacto { padding: 56px 0; }
+
+  .section-header { margin-bottom: 32px; }
+  .section-header h2 { font-size: 26px; }
+  .section-sub { font-size: 14px; }
+
+  /* ── Features: una columna, padding reducido ── */
+  .features-grid { grid-template-columns: 1fr; gap: 12px; }
+  .fc-large { grid-column: span 1; }
+  .feature-card { padding: 20px; }
+  .feature-card h3 { font-size: 15px; }
+  .fc-steps { flex-wrap: wrap; gap: 6px; }
+  .step { font-size: 11px; }
+
+  /* ── Nosotros ── */
+  .nosotros-layout { grid-template-columns: 1fr; gap: 28px; }
+  .mision-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .mision-card { padding: 16px; }
+  .mision-card h3 { font-size: 13px; }
+  .mision-card p { font-size: 12px; }
+  .equipo-grid { grid-template-columns: 1fr; gap: 12px; }
+  .team-card { padding: 20px; }
+
+  /* ── Precios: scroll horizontal elegante ── */
+  .planes-wrapper-mobile {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 4px 16px 16px;
+    margin: 0 -24px;
+    scrollbar-width: none;
+  }
+  .planes-wrapper-mobile::-webkit-scrollbar { display: none; }
+
+  .planes-grid {
+    display: flex;
+    flex-direction: row;
+    gap: 14px;
+    width: max-content;
+    padding: 0;
+  }
+
+  .plan-card {
+    width: 240px;
+    flex-shrink: 0;
+    padding: 24px 20px;
+  }
+
+  .plan-popular { transform: none; box-shadow: 0 4px 20px rgba(0,168,126,0.15); }
+  .plan-popular:hover { transform: translateY(-4px); }
+
+  /* Indicador de scroll */
+  .planes-scroll-hint {
+    text-align: center;
+    font-size: 11px;
+    color: var(--gray2);
+    margin-top: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Formulario ── */
   .form-row { grid-template-columns: 1fr; }
-  .hero-stats { flex-direction: column; gap: 16px; }
-  .stat-divider { width: 40px; height: 1px; }
+  .reservas-form, .contacto-form { padding: 24px 20px; border-radius: 16px; }
+  .reservas-form h3 { font-size: 17px; }
+
+  /* ── Contacto ── */
+  .contacto-layout { grid-template-columns: 1fr; gap: 32px; }
+  .social-links { flex-wrap: wrap; }
+
+  /* ── Footer ── */
+  .footer-inner { flex-direction: column; text-align: center; gap: 12px; }
+  .footer-links { flex-wrap: wrap; justify-content: center; gap: 12px 16px; }
+  .footer-links a { font-size: 12px; }
 }

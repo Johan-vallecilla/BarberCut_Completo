@@ -408,16 +408,88 @@
       .page { grid-template-columns: 1fr; padding-top: 90px; }
       .info-panel { position: static; }
       .info-title { font-size: 32px; }
-      .horarios-grid { grid-template-columns: repeat(3, 1fr); }
+      .horarios-grid { grid-template-columns: repeat(4, 1fr); }
+      .benefits { display: none; }
     }
-    @media (max-width: 480px) {
-      .navbar { padding: 16px 20px; }
-      .page { padding: 80px 16px 40px; }
-      .form-body { padding: 18px; }
-      .form-header { padding: 18px; }
-      .servicios-grid { grid-template-columns: 1fr; }
-      .horarios-grid { grid-template-columns: repeat(3, 1fr); }
-      .form-row { grid-template-columns: 1fr; }
+    @media (max-width: 560px) {
+      /* Navbar */
+      .navbar { padding: 14px 16px; }
+      .nav-logo { font-size: 18px; }
+      .nav-back { padding: 7px 12px; font-size: 12px; }
+
+      /* Page layout */
+      .page { padding: 76px 14px 40px; gap: 24px; }
+
+      /* Info panel compacto */
+      .info-panel { display: none; }
+
+      /* Form panel full width */
+      .form-panel { border-radius: 14px; }
+      .form-header { padding: 18px 18px 14px; }
+      .form-header h2 { font-size: 16px; }
+      .form-header p { font-size: 12px; }
+      .resumen-live { gap: 4px; }
+      .res-chip { font-size: 10px; padding: 3px 8px; }
+
+      /* Form body */
+      .form-body { padding: 16px; }
+      .form-section { margin-bottom: 18px; }
+      .form-section-label { font-size: 11px; margin-bottom: 8px; }
+
+      /* Servicios — 2 columnas compactas */
+      .servicios-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+      .servicio-card { padding: 10px; }
+      .sc-name { font-size: 12px; }
+      .sc-price { font-size: 11px; }
+      .sc-time { font-size: 10px; }
+      .sc-check { width: 16px; height: 16px; font-size: 9px; }
+
+      /* Barberos — scroll horizontal */
+      .barberos-grid {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 6px;
+        gap: 6px;
+        scrollbar-width: none;
+      }
+      .barberos-grid::-webkit-scrollbar { display: none; }
+      .barbero-card {
+        min-width: 88px;
+        flex: 0 0 88px;
+        padding: 10px 6px;
+      }
+      .bc-av { width: 36px; height: 36px; font-size: 11px; }
+      .bc-name { font-size: 11px; }
+      .bc-spec { font-size: 9px; }
+
+      /* Horarios — 3 columnas */
+      .horarios-grid { grid-template-columns: repeat(3, 1fr); gap: 5px; }
+      .hora-chip { padding: 8px 2px; font-size: 11px; border-radius: 7px; }
+
+      /* Inputs */
+      .form-row { grid-template-columns: 1fr; gap: 0; }
+      input, select { font-size: 14px; padding: 11px 12px; }
+
+      /* Botón submit */
+      .btn-submit { padding: 14px; font-size: 14px; }
+
+      /* Divider */
+      .form-divider { margin: 14px 0; }
+
+      /* Success screen */
+      .success-screen { padding: 32px 18px; }
+
+      /* Mi cita section */
+      .micita-section { padding: 0 14px 60px; }
+      .micita-layout { grid-template-columns: 1fr; gap: 20px; }
+      .micita-info { display: none; }
+      .micita-buscar-body { padding: 16px; }
+      .micita-buscar-header { padding: 16px; }
+
+      /* Modal */
+      .modal-mc { padding: 24px 20px; }
+      .modal-mc-btns { flex-direction: column; }
     }
   </style>
 </head>
