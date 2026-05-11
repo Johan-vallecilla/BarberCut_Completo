@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Don Blade Barbería — Demo BarberCut</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+/* ── VARIABLES — mismo sistema que el index.html ── */
+:root {
+  --accent:     #00a87e;
+  --accent-rgb: 0,168,126;
+  --accent-dim: #007a5c;
+  --bg:         #ffffff;
+  --surface:    #f7f7f7;
+  --surface2:   #efefef;
+  --border:     #e5e5e5;
+  --text:       #111111;
+  --muted:      #888888;
+  --sub:        #444444;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ── NAV — blanca igual que el index ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 18px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+}
+.nav-brand {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0px;
+  color: var(--text);
+  text-decoration: none;
+}
+.nav-brand span { color: var(--accent); }
+.nav-links { display: flex; gap: 32px; align-items: center; }
+.nav-links a {
+  font-size: 14px;
+  color: var(--sub);
+  text-decoration: none;
+  font-weight: 400;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--text); }
+.btn-reservar-nav {
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all .2s;
+}
+.btn-reservar-nav:hover { background: var(--accent-dim); transform: translateY(-1px); }
+
+/* ── HERO — fondo blanco con círculos igual que index ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 100px 48px 80px;
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+/* Círculos decorativos — mismo sistema hero-circle c1/c2 */
+.hero-circle {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+}
+.hero-circle.c1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(0,168,126,.12) 0%, transparent 70%);
+  top: -100px;
+  right: -80px;
+}
+.hero-circle.c2 {
+  width: 360px;
+  height: 360px;
+  background: radial-gradient(circle, rgba(0,168,126,.07) 0%, transparent 70%);
+  bottom: -60px;
+  left: -80px;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 680px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+  background: rgba(var(--accent-rgb),.08);
+  border: 1px solid rgba(var(--accent-rgb),.2);
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-bottom: 28px;
+  letter-spacing: .3px;
+}
+
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(52px, 8vw, 96px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.hero-title em {
+  font-style: italic;
+  font-weight: 700;
+  color: var(--accent);
+  display: block;
+}
+
+.hero-desc {
+  font-size: 17px;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 500px;
+  margin: 24px 0 40px;
+  font-weight: 400;
+}
+
+.hero-actions { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  padding: 14px 32px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all .25s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-primary:hover { background: var(--accent-dim); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,168,126,.2); }
+
+.btn-secondary {
+  color: var(--sub);
+  padding: 14px 24px;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  transition: all .2s;
+  background: #fff;
+}
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Stats en hero */
+.hero-stats {
+  display: flex;
+  gap: 40px;
+  margin-top: 52px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+}
+.hero-stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+  display: block;
+}
+.hero-stat-label {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+  display: block;
+}
+
+/* ── SECCIONES ── */
+section { padding: 96px 48px; }
+
+.section-tag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(32px, 4.5vw, 56px);
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.05;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+.section-title em {
+  font-style: italic;
+  color: var(--accent);
+}
+.section-sub { font-size: 16px; color: var(--muted); max-width: 500px; line-height: 1.7; }
+
+/* ── SERVICIOS ── */
+.servicios { background: var(--surface); }
+.servicios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 52px;
+}
+.servicio-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  transition: box-shadow .2s, transform .2s, border-color .2s;
+  cursor: default;
+}
+.servicio-card:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,.08);
+  transform: translateY(-3px);
+  border-color: rgba(var(--accent-rgb),.3);
+}
+.servicio-icon { font-size: 28px; margin-bottom: 16px; }
+.servicio-nombre {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -.3px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+.servicio-desc { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+.servicio-precio {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--accent);
+}
+.servicio-precio span { font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--muted); font-weight: 400; }
+
+/* ── GALERÍA ── */
+.galeria-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 240px 240px;
+  gap: 12px;
+  margin-top: 52px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.galeria-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 8px;
+}
+.galeria-item:first-child { grid-row: 1 / 3; }
+.galeria-item .placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: .5px;
+  transition: opacity .3s;
+}
+.galeria-item .placeholder-icon { font-size: 32px; opacity: .5; }
+.galeria-item:hover { border-color: rgba(var(--accent-rgb),.3); }
+.galeria-item:hover .placeholder { opacity: .7; }
+
+/* ── BARBEROS ── */
+.barberos-section { background: var(--surface); }
+.barberos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-top: 52px;
+}
+.barbero-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow .2s, transform .2s, border-color .2s;
+}
+.barbero-card:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,.08);
+  transform: translateY(-4px);
+  border-color: rgba(var(--accent-rgb),.3);
+}
+.barbero-foto {
+  height: 180px;
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56px;
+}
+.barbero-info { padding: 20px; }
+.barbero-nombre {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+.barbero-especialidad {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.barbero-exp { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+.barbero-btn {
+  display: block;
+  text-align: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--sub);
+  padding: 9px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all .2s;
+}
+.barbero-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* ── HORARIO ── */
+.horario-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  margin-top: 52px;
+  align-items: start;
+}
+.horario-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.horario-row:first-child { border-top: 1px solid var(--border); }
+.horario-dia { color: var(--sub); }
+.horario-hora { color: var(--text); font-weight: 600; }
+.horario-cerrado { color: var(--muted); font-style: italic; }
+.hoy {
+  background: rgba(var(--accent-rgb),.06);
+  padding: 14px 16px;
+  margin: 0 -16px;
+  border-radius: 6px;
+  border-bottom: none !important;
+}
+.hoy .horario-dia { color: var(--accent); font-weight: 700; }
+
+.mapa-placeholder {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.mapa-placeholder .map-icon { font-size: 40px; }
+.mapa-address { text-align: center; line-height: 1.6; color: var(--sub); }
+.mapa-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(var(--accent-rgb),.3);
+  padding-bottom: 2px;
+  transition: border-color .2s;
+}
+.mapa-link:hover { border-color: var(--accent); }
+
+/* ── CTA ── */
+.cta-section {
+  background: var(--text);
+  text-align: center;
+  padding: 100px 48px;
+  position: relative;
+  overflow: hidden;
+}
+.cta-section::before {
+  content: 'RESERVA';
+  position: absolute;
+  font-family: 'Syne', sans-serif;
+  font-size: 260px;
+  font-weight: 800;
+  color: rgba(255,255,255,.03);
+  letter-spacing: 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.cta-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(36px, 6vw, 72px);
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.05;
+  margin-bottom: 20px;
+  color: #fff;
+  position: relative;
+}
+.cta-title span { color: var(--accent); }
+.cta-sub { font-size: 17px; color: rgba(255,255,255,.6); margin-bottom: 40px; position: relative; }
+.btn-cta {
+  background: var(--accent);
+  color: #fff;
+  padding: 18px 48px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all .25s;
+  position: relative;
+}
+.btn-cta:hover { background: #00c48f; transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,168,126,.35); }
+
+/* ── FOOTER ── */
+footer {
+  background: #fff;
+  border-top: 1px solid var(--border);
+  padding: 32px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer-brand {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+}
+.footer-brand span { color: var(--accent); }
+.footer-powered { font-size: 12px; color: var(--muted); }
+.footer-powered a { color: var(--accent); text-decoration: none; font-weight: 600; }
+
+/* ── COLOR SWITCHER ── */
+.color-switcher {
+  position: fixed;
+  bottom: 28px;
+  left: 28px;
+  z-index: 200;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 20px rgba(0,0,0,.08);
+}
+.color-switcher p { margin-bottom: 10px; color: var(--sub); font-weight: 600; }
+.color-dots { display: flex; gap: 8px; }
+.color-dot {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all .2s;
+}
+.color-dot:hover { transform: scale(1.2); }
+.color-dot.active { border-color: #111; transform: scale(1.15); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-badge   { animation: fadeUp .6s ease .1s both; }
+.hero-title   { animation: fadeUp .6s ease .2s both; }
+.hero-desc    { animation: fadeUp .6s ease .35s both; }
+.hero-actions { animation: fadeUp .6s ease .45s both; }
+.hero-stats   { animation: fadeUp .6s ease .55s both; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  nav { padding: 14px 20px; }
+  .nav-links { display: none; }
+  .hero { padding: 90px 20px 60px; flex-direction: column; align-items: flex-start; }
+  .hero-stats { gap: 24px; flex-wrap: wrap; }
+  section { padding: 64px 20px; }
+  .galeria-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 160px 160px 160px; }
+  .galeria-item:first-child { grid-row: auto; }
+  .horario-wrap { grid-template-columns: 1fr; gap: 32px; }
+  footer { padding: 24px 20px; }
+  .color-switcher { bottom: 16px; left: 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-brand" href="/">✦ Don <span>Blade</span></a>
+  <a href="/" style="font-size:12px;color:#00a87e;border:1px solid rgba(0,168,126,0.25);padding:5px 14px;border-radius:20px;text-decoration:none;font-family:'DM Sans',sans-serif;font-weight:600;">← BarberCut</a>
+  <div class="nav-links">
+    <a href="#servicios">Servicios</a>
+    <a href="#galeria">Galería</a>
+    <a href="#barberos">Equipo</a>
+    <a href="#ubicacion">Ubicación</a>
+    <a class="btn-reservar-nav" href="#reservar">Reservar cita →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-circle c1"></div>
+  <div class="hero-circle c2"></div>
+
+  <div class="hero-content">
+    <span class="hero-badge">✦ Cali, Colombia · Desde 2018</span>
+    <h1 class="hero-title">
+      La Barbería
+      <em>de Juan</em>
+    </h1>
+    <p class="hero-desc">
+      Cortes clásicos y modernos con la precisión que merecés.
+      Tu estilo, nuestro oficio. Reserva tu cita en minutos.
+    </p>
+    <div class="hero-actions">
+      <a href="#reservar" class="btn-primary">Reservar cita →</a>
+      <a href="#servicios" class="btn-secondary">Ver servicios</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-num">6+</span>
+        <span class="hero-stat-label">Años de experiencia</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">3</span>
+        <span class="hero-stat-label">Barberos</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">4.9★</span>
+        <span class="hero-stat-label">Calificación</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section class="servicios" id="servicios">
+  <span class="section-tag">Lo que hacemos</span>
+  <h2 class="section-title">Servicios &amp; <em>Precios</em></h2>
+  <p class="section-sub">Cada servicio con productos premium y la técnica que tu imagen merece.</p>
+  <div class="servicios-grid">
+    <div class="servicio-card">
+      <div class="servicio-icon">✂️</div>
+      <div class="servicio-nombre">Corte Clásico</div>
+      <div class="servicio-desc">Corte con tijera o máquina, lavado y peinado incluido. El clásico que nunca falla.</div>
+      <div class="servicio-precio">$25.000 <span>/ 45 min</span></div>
+    </div>
+    <div class="servicio-card">
+      <div class="servicio-icon">🪒</div>
+      <div class="servicio-nombre">Corte + Barba</div>
+      <div class="servicio-desc">Combo completo. Corte de cabello más perfilado y arreglo de barba con navaja.</div>
+      <div class="servicio-precio">$38.000 <span>/ 60 min</span></div>
+    </div>
+    <div class="servicio-card">
+      <div class="servicio-icon">⚡</div>
+      <div class="servicio-nombre">Fade &amp; Design</div>
+      <div class="servicio-desc">Degradado profesional con diseño personalizado. Para los que quieren destacar.</div>
+      <div class="servicio-precio">$35.000 <span>/ 50 min</span></div>
+    </div>
+    <div class="servicio-card">
+      <div class="servicio-icon">👶</div>
+      <div class="servicio-nombre">Corte Niño</div>
+      <div class="servicio-desc">Corte para niños hasta 12 años. Ambiente tranquilo y paciencia garantizada.</div>
+      <div class="servicio-precio">$18.000 <span>/ 30 min</span></div>
+    </div>
+    <div class="servicio-card">
+      <div class="servicio-icon">💆</div>
+      <div class="servicio-nombre">Arreglo de Barba</div>
+      <div class="servicio-desc">Solo barba. Perfilado, afeitado con navaja y aceite hidratante post-afeitado.</div>
+      <div class="servicio-precio">$20.000 <span>/ 30 min</span></div>
+    </div>
+    <div class="servicio-card">
+      <div class="servicio-icon">👑</div>
+      <div class="servicio-nombre">Experiencia Premium</div>
+      <div class="servicio-desc">Lo mejor. Corte + barba + tratamiento capilar + masaje de cuero cabelludo.</div>
+      <div class="servicio-precio">$55.000 <span>/ 90 min</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- GALERÍA -->
+<section id="galeria">
+  <span class="section-tag">Nuestro trabajo</span>
+  <h2 class="section-title">Galería</h2>
+  <p class="section-sub">Resultados reales de nuestros clientes. El trabajo habla por sí solo.</p>
+  <div class="galeria-grid">
+    <div class="galeria-item"><div class="placeholder"><div class="placeholder-icon">✂️</div><span>Foto corte destacado</span></div></div>
+    <div class="galeria-item"><div class="placeholder"><div class="placeholder-icon">🪒</div><span>Fade + barba</span></div></div>
+    <div class="galeria-item"><div class="placeholder"><div class="placeholder-icon">⚡</div><span>Diseño</span></div></div>
+    <div class="galeria-item"><div class="placeholder"><div class="placeholder-icon">✦</div><span>Clásico</span></div></div>
+    <div class="galeria-item"><div class="placeholder"><div class="placeholder-icon">👑</div><span>Premium</span></div></div>
+  </div>
+</section>
+
+<!-- BARBEROS -->
+<section class="barberos-section" id="barberos">
+  <span class="section-tag">El equipo</span>
+  <h2 class="section-title">Nuestros <em>Barberos</em></h2>
+  <p class="section-sub">Cada uno con su estilo, todos con el mismo compromiso.</p>
+  <div class="barberos-grid">
+    <div class="barbero-card">
+      <div class="barbero-foto">✂️</div>
+      <div class="barbero-info">
+        <div class="barbero-nombre">Juan Ospina</div>
+        <div class="barbero-especialidad">Fade &amp; Clásicos</div>
+        <div class="barbero-exp">8 años de experiencia · Fundador</div>
+        <a class="barbero-btn" href="#reservar">Reservar con Juan →</a>
+      </div>
+    </div>
+    <div class="barbero-card">
+      <div class="barbero-foto">🪒</div>
+      <div class="barbero-info">
+        <div class="barbero-nombre">Carlos M.</div>
+        <div class="barbero-especialidad">Barba &amp; Diseños</div>
+        <div class="barbero-exp">5 años de experiencia</div>
+        <a class="barbero-btn" href="#reservar">Reservar con Carlos →</a>
+      </div>
+    </div>
+    <div class="barbero-card">
+      <div class="barbero-foto">⚡</div>
+      <div class="barbero-info">
+        <div class="barbero-nombre">Andrés R.</div>
+        <div class="barbero-especialidad">Modern &amp; Fade</div>
+        <div class="barbero-exp">3 años de experiencia</div>
+        <a class="barbero-btn" href="#reservar">Reservar con Andrés →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HORARIO -->
+<section id="ubicacion">
+  <span class="section-tag">Dónde estamos</span>
+  <h2 class="section-title">Horario &amp; <em>Ubicación</em></h2>
+  <div class="horario-wrap">
+    <div class="horario-tabla">
+      <div class="horario-row"><span class="horario-dia">Lunes</span><span class="horario-hora">9:00 AM — 7:00 PM</span></div>
+      <div class="horario-row"><span class="horario-dia">Martes</span><span class="horario-hora">9:00 AM — 7:00 PM</span></div>
+      <div class="horario-row"><span class="horario-dia">Miércoles</span><span class="horario-hora">9:00 AM — 7:00 PM</span></div>
+      <div class="horario-row"><span class="horario-dia">Jueves</span><span class="horario-hora">9:00 AM — 7:00 PM</span></div>
+      <div class="horario-row"><span class="horario-dia">Viernes</span><span class="horario-hora">9:00 AM — 8:00 PM</span></div>
+      <div class="horario-row hoy"><span class="horario-dia">Lunes ← hoy</span><span class="horario-hora">9:00 AM — 7:00 PM</span></div>
+      <div class="horario-row"><span class="horario-dia">Domingo</span><span class="horario-cerrado">Cerrado</span></div>
+    </div>
+    <div>
+      <div class="mapa-placeholder">
+        <div class="map-icon">📍</div>
+        <div class="mapa-address">Cra 5 #15-32, El Peñón<br>Cali, Valle del Cauca</div>
+        <a class="mapa-link" href="#">Ver en Google Maps →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="reservar">
+  <h2 class="cta-title">¿Listo para tu<br><span>próximo corte?</span></h2>
+  <p class="cta-sub">Reserva en menos de 2 minutos. Sin llamadas, sin esperas.</p>
+  <a href="/reservar" class="btn-cta">Reservar mi cita →</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Don <span>Blade</span></div>
+  <div class="footer-powered">Powered by <a href="#">BarberCut</a></div>
+</footer>
+
+<!-- COLOR SWITCHER -->
+<div class="color-switcher">
+  <p>Color de la barbería</p>
+  <div class="color-dots">
+    <div class="color-dot active" style="background:#00a87e" data-accent="#00a87e" data-rgb="0,168,126"></div>
+    <div class="color-dot" style="background:#e05252" data-accent="#e05252" data-rgb="224,82,82"></div>
+    <div class="color-dot" style="background:#5294e0" data-accent="#5294e0" data-rgb="82,148,224"></div>
+    <div class="color-dot" style="background:#52c47a" data-accent="#52c47a" data-rgb="82,196,122"></div>
+    <div class="color-dot" style="background:#9b59b6" data-accent="#9b59b6" data-rgb="155,89,182"></div>
+    <div class="color-dot" style="background:#e07b3a" data-accent="#e07b3a" data-rgb="224,123,58"></div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.color-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    const accent = dot.dataset.accent;
+    const rgb    = dot.dataset.rgb;
+    const dim    = shadeColor(accent, -30);
+    document.documentElement.style.setProperty('--accent',     accent);
+    document.documentElement.style.setProperty('--accent-rgb', rgb);
+    document.documentElement.style.setProperty('--accent-dim', dim);
+    document.querySelector('.hero-circle.c1').style.background =
+      `radial-gradient(circle, rgba(${rgb},.12) 0%, transparent 70%)`;
+    document.querySelector('.hero-circle.c2').style.background =
+      `radial-gradient(circle, rgba(${rgb},.07) 0%, transparent 70%)`;
+    document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+    dot.classList.add('active');
+  });
+});
+
+function shadeColor(hex, percent) {
+  const num = parseInt(hex.replace('#',''), 16);
+  const r = Math.min(255, Math.max(0, (num >> 16) + percent));
+  const g = Math.min(255, Math.max(0, ((num >> 8) & 0xff) + percent));
+  const b = Math.min(255, Math.max(0, (num & 0xff) + percent));
+  return '#' + [r, g, b].map(v => v.toString(16).padStart(2,'0')).join('');
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.servicio-card, .barbero-card, .galeria-item').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity .5s ease, transform .5s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>

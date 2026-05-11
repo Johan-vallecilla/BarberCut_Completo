@@ -95,6 +95,11 @@ def html(nombre: str) -> str:
 async def index():
     return FileResponse(html("index.html"))
 
+@app.get("/barberia", tags=["Páginas"])
+async def barberia():
+    return FileResponse(html("barberia.html"))
+
+
 @app.get("/reservar", tags=["Páginas"])
 async def reservar():
     return FileResponse(html("reservar.html"))
